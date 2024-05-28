@@ -45,25 +45,41 @@ header {
 }
 
 .nav_links li a {
-    transition; all 0.3s ease 0s;
+    text-decoration: none;
+    position: relative;
+    color: #fff;
+    display: inline-block;
 }
 
-.nav_links li a:hover{
-    text-decoration: underline;
+.nav_links li a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #fff;
+    transition: width 0.3s ease;
+}
+
+.nav_links li a:hover::after {
+    width: 100%;
 }
 
 .nav_button {
+    color: #333;
     padding: 9px 25px;
-    background-color: rgba(0,136,169,1);
+    background-color: #fff;
     border: none;
     border-radius: 50px;
     cursor: pointer;
-    transition; all 0.3s ease 0s;
+    transition: color 0.3s, background-color 0.3s;
     margin-left: 15px;
 }
 
 .nav_button:hover{
     background-color: rgba(0,136,169,0.8);
+    color: #fff;
 }
 
 /* main */
@@ -152,10 +168,23 @@ main {
 .remember-forgot a{
     color:#fff;
     text-decoration: none;
+    position: relative;
+    display: inline-block;
 }
 
-.remember-forgot a:hover {
-    text-decoration: underline;
+.remember-forgot a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #fff;
+    transition: width 0.3s ease;
+}
+
+.remember-forgot a:hover::after {
+    width: 100%;
 }
 
 .wrapper .submit_button{
@@ -170,7 +199,8 @@ main {
     font-size: 16px;
     color: #333;
     font-weight: 600;
-    transition; all 0.5s ease 0.5s;
+    position: relative;
+    transition: color 0.3s, background-color 0.3s;
 }
 
 .wrapper .submit_button:hover{
@@ -189,9 +219,23 @@ main {
     color: #fff;
     text-decoration: none;
     font-weight: 600;
+    position: relative;
 }
 
-.register-link p a:hover {
-    text-decoration: underline;
+.register-link p a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px; /* Height of the underline, change as needed */
+    background-color: #fff; /* Color of the underline, change as needed */
+    transition: width 0.3s ease; /* Duration and timing function of the animation */
 }
+
+/* Hover state */
+.register-link p a:hover::after {
+    width: 100%; /* Expand the underline to the full width */
+}
+
 

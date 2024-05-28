@@ -43,4 +43,10 @@ def credential_validation(username, email, password, c_password):
 
     print("Unique credentials Pass")
     print("Validation Passed")
-    return True
+    if uh.create_new_user(username, email, encrypted_password):
+        print("User Created")
+        return True
+    else:
+        print("User Creation Failed")
+        return False
+

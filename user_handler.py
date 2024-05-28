@@ -28,6 +28,22 @@ def check_unique_cred(username, email):
         conn.close()
 
 
+def create_new_user(username, email, password):
+    conn = db_connect()
+    cur = conn.cursor()
+    try:
+        cur.execute("INSERT INTO user (username, email, password) VALUES (?,?,?)", (username, email, password))
+        conn.commit()
+        return True
+    except sqlite3.Error as error:
+        print(error.sqlite_errorcode)
+        print(error.sqlite_errorname)
+        return False
+    finally:
+        cur.close()
+        conn.close()
+
+
 # Current user class which holds the current user's data
 # @singleton
 class CurrentUser:

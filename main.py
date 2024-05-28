@@ -25,8 +25,9 @@ def signup():
 
 @app.route('/signup_redirect', methods=['GET', 'POST'])
 def signup_redirect():
-    NL_data = request.form.getlist('NL')
-    if cv.credential_validation(request.form['username'], request.form['email'], request.form['password'], request.form['confirm_password']):
+    if cv.credential_validation(request.form['username'], request.form['email'],
+                                request.form['password'], request.form['confirm_password']):
+
         return "signup_redirect pass"
     else:
         return "signup_redirect fail"
