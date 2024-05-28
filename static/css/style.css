@@ -84,6 +84,12 @@ main {
 
 /* sign-up/login form */
 
+.error {
+    color: red;
+    text-align: center;
+    font-weight: 300;
+}
+
 .wrapper {
     width: 420px;
     background: transparent;

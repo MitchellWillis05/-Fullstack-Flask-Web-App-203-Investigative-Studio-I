@@ -1,7 +1,8 @@
 # import libraries and other files
 from flask import Flask, render_template, request
-import user_handler
-import password_handler
+import user_handler as uh
+import password_handler as ph
+import credential_validate as cv
 
 # define app
 app = Flask(__name__)
@@ -24,15 +25,9 @@ def signup():
 
 @app.route('/signup_redirect', methods=['GET', 'POST'])
 def signup_redirect():
-    username_data = request.form['username']
-    email_data = request.form['email']
-    password_data = password_handler.encrypt_password(request.form['password'])
-    NL_data = request.form['NL']
-    if password_handler.verify_password(request.form['confirm_password'], password_data):
-        if len(request.form['confirm_password']) >= 10:
-            return "signup_redirect success"
-        else:
-            return "signup_redirect fail"
+    NL_data = request.form.getlist('NL')
+    if cv.credential_validation(request.form['username'], request.form['email'], request.form['password'], request.form['confirm_password']):
+        return "signup_redirect pass"
     else:
         return "signup_redirect fail"
 
