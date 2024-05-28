@@ -30,7 +30,7 @@ def signup_redirect():
 
         return "signup_redirect pass"
     else:
-        return "signup_redirect fail"
+        return render_template('signup.html', error="An error occurred, please try again")
 
 
 # run the app

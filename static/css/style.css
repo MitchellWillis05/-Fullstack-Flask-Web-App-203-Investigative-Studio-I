@@ -104,6 +104,7 @@ main {
     color: red;
     text-align: center;
     font-weight: 300;
+    position:relative; bottom:15px;
 }
 
 .wrapper {
