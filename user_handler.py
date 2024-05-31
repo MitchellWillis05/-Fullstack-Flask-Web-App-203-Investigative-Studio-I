@@ -1,5 +1,6 @@
 # import sqlite3 for database interaction
 import sqlite3
+import password_handler as ph
 
 
 # database connection method
@@ -49,11 +50,22 @@ def create_new_user(username, email, password):
         conn.close()
 
 
-# Current user class which holds the current user's data
-# @singleton
-class CurrentUser:
-    def __init__(self, fname, lname, email):
-        self.fname = fname
-        self.lname = lname
-        self.email = email
+def validate_login(username, password):
+    conn = db_connect()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT password FROM user WHERE username = ?", (username,))
+        password_fetched = cur.fetchall()
+
+        if ph.verify_password(password, password_fetched):
+            return True
+        else:
+            return False
+    except sqlite3.Error as error:
+        print(error.sqlite_errorcode)
+        print(error.sqlite_errorname)
+        return False
+    finally:
+        cur.close()
+        conn.close()
 
