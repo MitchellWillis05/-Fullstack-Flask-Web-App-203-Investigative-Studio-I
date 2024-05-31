@@ -85,7 +85,7 @@ header {
 /* main */
 
 body {
-    background: url('/static/images/pexels-jvbuenconcejo-2719301.jpg') no-repeat;
+    background: url('/static/images/pexels-minan1398-813269.jpg') no-repeat;
     background-size: cover;
     background-position: center;
 }
@@ -109,7 +109,7 @@ main {
 
 .wrapper {
     width: 420px;
-    background: transparent;
+    background: rgba(215, 215, 215, 0.05);
     border: 2px solid rgba(255, 255, 255, .2);
     color: #fff;
     border-radius: 10px;

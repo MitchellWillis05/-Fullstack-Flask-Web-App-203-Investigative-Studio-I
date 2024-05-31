@@ -25,12 +25,13 @@ def signup():
 
 @app.route('/signup_redirect', methods=['GET', 'POST'])
 def signup_redirect():
-    if cv.credential_validation(request.form['username'], request.form['email'],
-                                request.form['password'], request.form['confirm_password']):
+    validation = cv.credential_validation(request.form['username'], request.form['email'],
+                                          request.form['password'], request.form['confirm_password'])
 
-        return "signup_redirect pass"
+    if len(validation) > 0:
+        return render_template('signup.html', error=validation)
     else:
-        return render_template('signup.html', error="An error occurred, please try again")
+        return "signup_redirect_pass"
 
 
 # run the app

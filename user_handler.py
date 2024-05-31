@@ -17,12 +17,17 @@ def check_unique_cred(username, email):
     conn = db_connect()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT * FROM user WHERE username = ? OR email = ?", (username, email))
-        results = cur.fetchall()
-        if len(results) == 0:
-            return True
+        cur.execute("SELECT * FROM user WHERE username = ?", (username,))
+        results_u = cur.fetchall()
+        cur.execute("SELECT * FROM user WHERE email = ?", (email.lower(),))
+        results_e = cur.fetchall()
+        if len(results_u) == 0:
+            if len(results_e) == 0:
+                return 2
+            else:
+                return 1
         else:
-            return False
+            return 0
     finally:
         cur.close()
         conn.close()
@@ -32,7 +37,7 @@ def create_new_user(username, email, password):
     conn = db_connect()
     cur = conn.cursor()
     try:
-        cur.execute("INSERT INTO user (username, email, password) VALUES (?,?,?)", (username, email, password))
+        cur.execute("INSERT INTO user (username, email, password) VALUES (?,?,?)", (username, email.lower(), password))
         conn.commit()
         return True
     except sqlite3.Error as error:
