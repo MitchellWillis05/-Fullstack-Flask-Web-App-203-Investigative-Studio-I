@@ -1,4 +1,5 @@
 # import libraries and other files
+import werkzeug.exceptions
 from flask import Flask, render_template, request
 import user_handler as uh
 import password_handler as ph
@@ -18,6 +19,11 @@ def login():
     return render_template('login.html')
 
 
+@app.route('/login_redirect', methods=['GET', 'POST'])
+def login_redirect():
+    return "login redirect"
+
+
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
@@ -25,8 +31,11 @@ def signup():
 
 @app.route('/signup_redirect', methods=['GET', 'POST'])
 def signup_redirect():
-    validation = cv.credential_validation(request.form['username'], request.form['email'],
-                                          request.form['password'], request.form['confirm_password'])
+    try:
+        validation = cv.credential_validation(request.form['username'], request.form['email'],
+                                              request.form['password'], request.form['confirm_password'])
+    except werkzeug.exceptions.BadRequest as e:
+        validation = "Please fill out all fields"
 
     if len(validation) > 0:
         return render_template('signup.html', error=validation)
