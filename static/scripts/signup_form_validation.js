@@ -36,10 +36,10 @@ form.addEventListener('submit', (e)=>{
         errorElement.innerText = ('Please confirm password')
     }
 
-    else if (username.value.length < 6 || username.value.length > 15)
+    else if (username.value.length <= 3 || username.value.length >= 15)
     {
         e.preventDefault()
-        errorElement.innerText = ('Username must be 6 - 15 characters')
+        errorElement.innerText = ('Username must be 3 - 15 characters')
     }
 
     else if(!validateEmail(email.value)){

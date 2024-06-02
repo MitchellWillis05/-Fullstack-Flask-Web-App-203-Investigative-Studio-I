@@ -50,20 +50,23 @@ def create_new_user(username, email, password):
         conn.close()
 
 
-def validate_login(username, password):
+def validate_login(email, password):
     conn = db_connect()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT password FROM user WHERE username = ?", (username,))
+        cur.execute("SELECT password FROM user WHERE email = ?", (email,))
         password_fetched = cur.fetchall()
 
-        if ph.verify_password(password, password_fetched):
+        if ph.verify_password(password, password_fetched[0][0]):
             return True
         else:
             return False
     except sqlite3.Error as error:
         print(error.sqlite_errorcode)
         print(error.sqlite_errorname)
+        return False
+    except IndexError as error:
+        print(error)
         return False
     finally:
         cur.close()

@@ -21,7 +21,13 @@ def login():
 
 @app.route('/login_redirect', methods=['GET', 'POST'])
 def login_redirect():
-    return "login redirect"
+    try:
+        if uh.validate_login(request.form['email'], request.form['password']):
+            return "login redirect passed"
+        else:
+            return "login redirect fail"
+    except werkzeug.exceptions.BadRequest as er:
+        return "skip detected"
 
 
 @app.route('/signup')
@@ -40,7 +46,7 @@ def signup_redirect():
     if len(validation) > 0:
         return render_template('signup.html', error=validation)
     else:
-        return "signup_redirect_pass"
+        return render_template('login.html', error=validation)
 
 
 # run the app

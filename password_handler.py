@@ -6,5 +6,5 @@ def encrypt_password(password):
     return password_hash
 
 
-def verify_password(password, hashed_password):
-    return check_password_hash(hashed_password, password)
+def verify_password(password, pwhash):
+    return check_password_hash(pwhash, password)

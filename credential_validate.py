@@ -9,7 +9,7 @@ def credential_validation(username, email, password, c_password):
     encrypted_password = ph.encrypt_password(password)
 
     # Check username length
-    if len(username) < 6:
+    if len(username) <= 3 | len(username) >= 15:
         print("Username Length Fail")
         return "An error occurred, please try again"
 
