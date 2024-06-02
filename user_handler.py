@@ -2,7 +2,6 @@
 import sqlite3
 import password_handler as ph
 
-
 # database connection method
 def db_connect():
     conn = None

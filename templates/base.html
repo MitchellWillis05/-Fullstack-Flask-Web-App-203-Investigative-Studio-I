@@ -12,6 +12,7 @@
 <body>
     <header>
         <a class="logo" href="{{ url_for('home') }}"><img src="static/images/logo_test.svg" alt="logo"></a>
+        {% if logged_in %}
         <nav>
             <ul class="nav_links">
                 <li><a href="#">Services</a></li>
@@ -20,8 +21,10 @@
 
             </ul>
         </nav>
+        {%else%}
         <a class="cta" href="{{ url_for('login') }}"><button class="nav_button">Log In</button></a>
         <a class="cta" href="{{ url_for('signup') }}"><button class="nav_button">Sign Up</button></a>
+        {%endif%}
     </header>
 
     <main>

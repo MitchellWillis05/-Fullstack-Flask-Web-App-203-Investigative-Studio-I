@@ -11,28 +11,29 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('home.html', logged_in=logged_in)
 
 
 @app.route('/login')
 def login():
-    return render_template('login.html')
+    return render_template('login.html', logged_in=logged_in)
 
 
 @app.route('/login_redirect', methods=['GET', 'POST'])
 def login_redirect():
     try:
         if uh.validate_login(request.form['email'], request.form['password']):
-            return "login redirect passed"
+
+            return "login redirect pass"
         else:
-            return "login redirect fail"
+            return render_template("login.html", error="Incorrect username / password", logged_in=logged_in)
     except werkzeug.exceptions.BadRequest as er:
-        return "skip detected"
+        return render_template("login.html", error="Please fill out all fields", logged_in=logged_in)
 
 
 @app.route('/signup')
 def signup():
-    return render_template('signup.html')
+    return render_template('signup.html', logged_in=logged_in)
 
 
 @app.route('/signup_redirect', methods=['GET', 'POST'])
@@ -44,9 +45,9 @@ def signup_redirect():
         validation = "Please fill out all fields"
 
     if len(validation) > 0:
-        return render_template('signup.html', error=validation)
+        return render_template('signup.html', error=validation, logged_in=logged_in)
     else:
-        return render_template('login.html', error=validation)
+        return render_template('login.html', error=validation, logged_in=logged_in)
 
 
 # run the app
