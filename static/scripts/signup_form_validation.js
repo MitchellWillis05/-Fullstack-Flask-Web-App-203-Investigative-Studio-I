@@ -56,10 +56,6 @@ form.addEventListener('submit', (e)=>{
     else if (password.value != confirm_password.value)
     {
         e.preventDefault()
-        errorElement.innerText = ('Passwords must match')
+        errorElement.innerText = ('Passwords do not match')
     }
-
-
-
-
 })
