@@ -1,5 +1,6 @@
 {% extends "base.html" %}
         {% block content %}
+            <script defer src="static/scripts/login_form_validation.js"></script>
             <div class="wrapper">
                 <form id="login" action="{{ url_for('login_redirect')}}" method="post">
                     <h1>Login</h1>
@@ -16,6 +17,8 @@
                         <label for="remember"><input type="checkbox" id="remember">Remember me</label>
                         <a href="#">Forgot password?</a>
                     </div>
+
+                    <div class="error" id="error">{{ error }}</div>
 
                     <button type="submit" class="submit_button">Login</button>
 
