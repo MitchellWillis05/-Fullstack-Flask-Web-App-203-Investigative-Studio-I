@@ -15,11 +15,11 @@
         {% if logged_in %}
         <nav>
             <ul class="nav_links">
-                <li><a href="#">Services</a></li>
-                <li><a href="#">Projects</a></li>
-                <li><a href="#">About</a></li>
-
+                <li><a href="#">Analytics</a></li>
+                <li><a href="#">Journal</a></li>
+                <li><a href="#">Profile</a></li>
             </ul>
+
         </nav>
         {%else%}
         <a class="cta" href="{{ url_for('login') }}"><button class="nav_button">Log In</button></a>
