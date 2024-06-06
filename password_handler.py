@@ -1,10 +1,12 @@
-from werkzeug.security import generate_password_hash, check_password_hash
+import hashlib
 
 
 def encrypt_password(password):
-    password_hash = generate_password_hash(password)
-    return password_hash
+    return hashlib.sha256(password.encode()).hexdigest()
 
 
 def verify_password(password, pwhash):
-    return check_password_hash(pwhash, password)
+    if hashlib.sha256(password.encode()).hexdigest() == pwhash:
+        return True
+    return False
+
