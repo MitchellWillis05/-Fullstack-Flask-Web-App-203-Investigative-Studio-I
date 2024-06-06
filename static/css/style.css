@@ -210,7 +210,6 @@ main {
 
 .wrapper .submit_button:hover{
        background: rgba(0,136,169,1);
-       transition; all 0.5s ease 0.5s;
        color: #fff;
 }
 

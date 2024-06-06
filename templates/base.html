@@ -22,8 +22,10 @@
 
         </nav>
         {%else%}
-        <a class="cta" href="{{ url_for('login') }}"><button class="nav_button">Log In</button></a>
-        <a class="cta" href="{{ url_for('signup') }}"><button class="nav_button">Sign Up</button></a>
+        <ul class="nav_links">
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+        </ul>
         {%endif%}
     </header>
 
