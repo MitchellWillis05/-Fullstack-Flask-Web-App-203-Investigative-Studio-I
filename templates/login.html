@@ -4,14 +4,15 @@
 
             <div id="popup-overlay" class="popup-overlay" onclick="closePopup(event)">
                 <div class="popup-content" id="email-popup" onclick="stopPropagation(event)" >
-                  <h2>Enter Your Email</h2>
+                  <h2>Reset password</h2>
+                    <p>Please enter your email</p>
                   <form id="email-form" onsubmit="submitEmail(event)">
                     <input type="text" id="email-input" autocomplete="off" placeholder="Email">
                     <button class="popup-submit" id="email-submit" type="submit">Send</button>
                   </form>
                 </div>
                 <div class="popup-content" id="code-popup" style="display: none;" onclick="stopPropagation(event)">
-                  <h2>Enter Your Code</h2>
+                    <p>Please enter your confirmation code</p>
                   <form id="code-form" onsubmit="submitCode(event)">
                     <input class="code-input" type="text" id="code-input" autocomplete="off" placeholder="XXXXX">
                     <button class="popup-submit" type="submit">Submit</button>

@@ -65,9 +65,9 @@ def signup_redirect():
         return render_template('login.html', error=validation, logged_in=logged_in())
 
 
-@app.route('/test')
-def test():
-    return render_template('test.html')
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
 
 
 @app.route('/submit-email', methods=['GET', 'POST'])
