@@ -1,19 +1,23 @@
 # import libraries and other files
 import os
+from random import randint
+
 import werkzeug.exceptions
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask_mail import Mail, Message
 import user_handler as uh
-import password_handler as ph
 import credential_validate as cv
 
 # define app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
-app.config['SESSION_COOKIE_SECURE'] = True
-app.config['REMEMBER_COOKIE_SECURE'] = True
-app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['REMEMBER_COOKIE_HTTPONLY'] = True
-
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'lucid.log.confirmations@gmail.com'
+app.config['MAIL_PASSWORD'] = 'xtqq jbky pnip cyud'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
 
 @app.route('/')
 def home():
@@ -59,6 +63,30 @@ def signup_redirect():
         return render_template('signup.html', error=validation, logged_in=logged_in())
     else:
         return render_template('login.html', error=validation, logged_in=logged_in())
+
+
+@app.route('/test')
+def test():
+    return render_template('test.html')
+
+
+@app.route('/submit-email', methods=['GET', 'POST'])
+def submit_email():
+    if request.method == 'POST':
+        data = request.get_json()
+        if not data or 'email' not in data:
+            return jsonify({'message': 'Email is required'}), 400
+
+        email = data.get('email')
+        msg = Message('Email Confirmation', sender='lucid.log.confirmations@gmail.com', recipients=[email])
+        confirmation_code = str(randint(00000, 99999))
+        msg.body = "Your email confirmation code is: " + confirmation_code
+        mail.send(msg)
+        # Process the email (e.g., send verification code)
+        # Add your email processing logic here
+        return jsonify({'message': 'Email submitted successfully'})
+    else:
+        return redirect(url_for('home'))
 
 
 def logged_in():

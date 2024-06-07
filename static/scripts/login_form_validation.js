@@ -34,6 +34,7 @@ form.addEventListener('submit', (e)=>{
     {
         e.preventDefault()
         errorElement.innerText = ('Password must be 10 characters or longer')
+
     }
 
 })

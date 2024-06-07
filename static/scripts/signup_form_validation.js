@@ -30,7 +30,7 @@ form.addEventListener('submit', (e)=>{
         errorElement.innerText = ('Password is required')
     }
 
-    else if (confirm_password.value == '' || confirm_password.value == null )
+    else if (confirm_password.value === '' || confirm_password.value == null )
     {
         e.preventDefault()
         errorElement.innerText = ('Please confirm password')
@@ -53,7 +53,7 @@ form.addEventListener('submit', (e)=>{
         errorElement.innerText = ('Password must be 10 characters or longer')
     }
 
-    else if (password.value != confirm_password.value)
+    else if (password.value !== confirm_password.value)
     {
         e.preventDefault()
         errorElement.innerText = ('Passwords do not match')
