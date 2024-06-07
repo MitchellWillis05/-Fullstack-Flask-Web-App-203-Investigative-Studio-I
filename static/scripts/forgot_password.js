@@ -65,6 +65,8 @@ function showEmailPopup() {
 
     function closePopup() {
         document.getElementById('popup-overlay').style.display = 'none';
+        document.getElementById('email-input').value = '';
+        document.getElementById('code-input').value = '';
     }
 
 function stopPropagation(event) {
