@@ -79,12 +79,30 @@ def submit_email():
 
         email = data.get('email')
         msg = Message('Email Confirmation', sender='lucid.log.confirmations@gmail.com', recipients=[email])
-        confirmation_code = str(randint(00000, 99999))
-        msg.body = "Your email confirmation code is: " + confirmation_code
+        session.pop('confirmation_code', None)
+        session['confirmation_code'] = str(randint(00000, 99999))
+        msg.body = "Your email confirmation code is: " + session['confirmation_code']
         mail.send(msg)
-        # Process the email (e.g., send verification code)
-        # Add your email processing logic here
+
         return jsonify({'message': 'Email submitted successfully'})
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/submit-code', methods=['POST', 'GET'])
+def submit_code():
+    if request.method == 'POST':
+        data = request.get_json()
+        if not data or 'code' not in data:
+            return jsonify({'message': 'Code is required'}), 400
+
+        code = data.get('code')
+        if code == session['confirmation_code']:
+            session.pop('confirmation_code', None)
+        else:
+            return jsonify({'message': 'Incorrect Code'}), 400
+
+        return jsonify({'message': 'Code submitted successfully'})
     else:
         return redirect(url_for('home'))
 

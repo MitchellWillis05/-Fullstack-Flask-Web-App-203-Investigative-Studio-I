@@ -1,5 +1,23 @@
 {% extends "base.html" %}
         {% block content %}
+            <script defer src="/static/scripts/forgot_password.js"></script>
+
+            <div id="popup-overlay" class="popup-overlay" onclick="closePopup(event)">
+                <div class="popup-content" id="email-popup" onclick="stopPropagation(event)" >
+                  <h2>Enter Your Email</h2>
+                  <form id="email-form" onsubmit="submitEmail(event)">
+                    <input type="text" id="email-input" placeholder="Email">
+                    <button class="popup-submit" type="submit">Submit</button>
+                  </form>
+                </div>
+                <div class="popup-content" id="code-popup" style="display: none;">
+                  <h2>Enter Your Code</h2>
+                  <form id="code-form" onsubmit="submitCode(event)">
+                    <input type="text" id="code-input" placeholder="Code">
+                    <button type="submit">Submit</button>
+                  </form>
+                </div>
+            </div>
             <script defer src="static/scripts/login_form_validation.js"></script>
             <div class="wrapper">
                 <form id="login" action="{{ url_for('login_redirect')}}" method="post">
@@ -15,7 +33,7 @@
 
                     <div class="remember-forgot">
                         <label for="remember"><input type="checkbox" id="remember">Remember me</label>
-                        <a href="#">Forgot password?</a>
+                        <a href="#" onclick="showEmailPopup()">Forgot password?</a>
                     </div>
 
                     <div class="error" id="error">{{ error }}</div>
@@ -27,4 +45,5 @@
                     </div>
                 </form>
             </div>
+
         {% endblock %}

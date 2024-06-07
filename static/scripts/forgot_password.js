@@ -5,7 +5,7 @@ function showEmailPopup() {
     }
 
     async function submitEmail(event) {
-      event.preventDefault(); // Prevent the default form submission behavior
+      event.preventDefault();
       const email = document.getElementById('email-input').value;
       if (email) {
         try {
@@ -35,7 +35,7 @@ function showEmailPopup() {
     }
 
     async function submitCode(event) {
-      event.preventDefault(); // Prevent the default form submission behavior
+      event.preventDefault();
       const code = document.getElementById('code-input').value;
       if (code) {
         try {
@@ -62,6 +62,12 @@ function showEmailPopup() {
       }
     }
 
-    function closePopup() {
-      document.getElementById('popup-overlay').style.display = 'none';
+    function closePopup(event) {
+       if (!event.target.closest('.popup-content')) {
+                document.getElementById('popup-overlay').style.display = 'none';
+       }
     }
+
+function stopPropagation(event) {
+    event.stopPropagation();
+}
