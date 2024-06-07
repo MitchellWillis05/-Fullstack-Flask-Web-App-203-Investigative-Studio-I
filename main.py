@@ -79,13 +79,7 @@ def submit_email():
         email = data.get('email')
         if uh.check_email(email):
             return jsonify({'message': 'No users match this email'}), 400
-
-        msg = Message('Email Confirmation', sender='Lucid Log', recipients=[email])
-        session.pop('confirmation_code', None)
-        session['confirmation_code'] = str(randint(10000, 99999))
-        msg.body = "Your email confirmation code is: " + session['confirmation_code']
-        mail.send(msg)
-
+        send_confirmation_code(email)
         return jsonify({'message': 'Email submitted successfully'}), 200
     else:
         return redirect(url_for('home'))
@@ -113,6 +107,14 @@ def logged_in():
         return True
     else:
         return False
+
+
+def send_confirmation_code(email):
+    msg = Message('Email Confirmation', sender='Lucid Log', recipients=[email])
+    session.pop('confirmation_code', None)
+    session['confirmation_code'] = str(randint(10000, 99999))
+    msg.body = "Your email confirmation code is: " + session['confirmation_code']
+    mail.send(msg)
 
 
 # run the app
