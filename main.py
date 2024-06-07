@@ -76,15 +76,17 @@ def submit_email():
         data = request.get_json()
         if not data or 'email' not in data:
             return jsonify({'message': 'Email is required'}), 400
-
         email = data.get('email')
+        if uh.check_email(email):
+            return jsonify({'message': 'No users match this email'}), 400
+
         msg = Message('Email Confirmation', sender='Lucid Log', recipients=[email])
         session.pop('confirmation_code', None)
         session['confirmation_code'] = str(randint(10000, 99999))
         msg.body = "Your email confirmation code is: " + session['confirmation_code']
         mail.send(msg)
 
-        return jsonify({'message': 'Email submitted successfully'})
+        return jsonify({'message': 'Email submitted successfully'}), 200
     else:
         return redirect(url_for('home'))
 

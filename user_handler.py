@@ -34,6 +34,35 @@ def check_unique_cred(username, email):
         conn.close()
 
 
+def check_username(username):
+    conn = db_connect()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT * FROM user WHERE username = ?", (username,))
+        results = cur.fetchall()
+        if len(results) == 0:
+            return True  # username does not exist in database
+        else:
+            return False  # user exists in database
+    finally:
+        cur.close()
+        conn.close()
+
+
+def check_email(email):
+    conn = db_connect()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT * FROM user WHERE email = ?", (email,))
+        results = cur.fetchall()
+        if len(results) == 0:
+            return True  # email does not exist in database
+        else:
+            return False  # email exists in database
+    finally:
+        cur.close()
+        conn.close()
+
 def create_new_user(username, email, password):
     conn = db_connect()
     cur = conn.cursor()
