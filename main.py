@@ -78,7 +78,7 @@ def submit_email():
             return jsonify({'message': 'Email is required'}), 400
 
         email = data.get('email')
-        msg = Message('Email Confirmation', sender='lucid.log.confirmations@gmail.com', recipients=[email])
+        msg = Message('Email Confirmation', sender='Lucid Log', recipients=[email])
         session.pop('confirmation_code', None)
         session['confirmation_code'] = str(randint(10000, 99999))
         msg.body = "Your email confirmation code is: " + session['confirmation_code']

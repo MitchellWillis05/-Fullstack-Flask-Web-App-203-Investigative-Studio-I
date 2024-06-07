@@ -50,7 +50,8 @@ function showEmailPopup() {
           if (response.ok) {
             alert('Code submitted successfully.');
             closePopup();
-          } else {
+          }
+          else {
             alert(result.message || 'Failed to submit code.');
           }
         } catch (error) {
@@ -62,10 +63,8 @@ function showEmailPopup() {
       }
     }
 
-    function closePopup(event) {
-       if (!event.target.closest('.popup-content')) {
-                document.getElementById('popup-overlay').style.display = 'none';
-       }
+    function closePopup() {
+        document.getElementById('popup-overlay').style.display = 'none';
     }
 
 function stopPropagation(event) {
