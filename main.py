@@ -7,6 +7,8 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from flask_mail import Mail, Message
 import user_handler as uh
 import credential_validate as cv
+import time
+
 
 # define app
 app = Flask(__name__)
@@ -18,6 +20,8 @@ app.config['MAIL_PASSWORD'] = 'xtqq jbky pnip cyud'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
+
+email_timeout_duration = 60
 
 
 @app.route('/')
@@ -73,6 +77,7 @@ def not_found_error(error):
 @app.route('/submit-email', methods=['GET', 'POST'])
 def submit_email():
     if request.method == 'POST':
+        current_time = time.time()
         data = request.get_json()
         if not data or 'email' not in data:
             return jsonify({'message': 'Email is required'}), 400
@@ -95,7 +100,7 @@ def submit_code():
         code = data.get('code')
         if code == session['confirmation_code']:
             session.pop('confirmation_code', None)
-            return jsonify({'message': 'correct'}), 200
+            return jsonify({'message': 'Code submitted successfully'}), 200
         else:
             return jsonify({'message': 'Incorrect Code'}), 400
     else:
@@ -104,7 +109,7 @@ def submit_code():
 
 @app.route('/reset-password', methods=['GET', 'POST'])
 def reset_password():
-    return render_template('resetpassword.html', logged_in=logged_in())
+    return render_template('reset-password.html', logged_in=logged_in())
 
 
 def logged_in():
@@ -115,7 +120,7 @@ def logged_in():
 
 
 def send_confirmation_code(email):
-    msg = Message('Email Confirmation', sender='Lucid Log', recipients=[email])
+    msg = Message('Email Confirmation', sender='no-reply@domain.com', recipients=[email])
     session.pop('confirmation_code', None)
     session['confirmation_code'] = str(randint(10000, 99999))
     msg.body = "Your email confirmation code is: " + session['confirmation_code']

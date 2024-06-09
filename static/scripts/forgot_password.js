@@ -79,8 +79,8 @@ async function submitCode(event) {
           });
           const result = await response.json();
           if (response.ok) {
-              alert('Code submitted successfully.');
               closePopup();
+              window.location.href = '/reset-password'
           } else {
               alert(result.message || 'Failed to submit code.');
           }
