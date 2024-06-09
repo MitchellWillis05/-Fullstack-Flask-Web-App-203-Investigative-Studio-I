@@ -19,9 +19,9 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
+
 @app.route('/')
 def home():
-
     return render_template('home.html', logged_in=logged_in())
 
 
@@ -95,11 +95,16 @@ def submit_code():
         code = data.get('code')
         if code == session['confirmation_code']:
             session.pop('confirmation_code', None)
-            return jsonify({'message': 'Code submitted successfully'})
+            return jsonify({'message': 'correct'}), 200
         else:
             return jsonify({'message': 'Incorrect Code'}), 400
     else:
         return redirect(url_for('home'))
+
+
+@app.route('/reset-password', methods=['GET', 'POST'])
+def reset_password():
+    return render_template('resetpassword.html', logged_in=logged_in())
 
 
 def logged_in():
