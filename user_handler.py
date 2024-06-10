@@ -80,6 +80,22 @@ def create_new_user(username, email, password):
         conn.close()
 
 
+def update_password(user_id, new_password):
+    conn = db_connect()
+    cur = conn.cursor()
+    try:
+        new_password = ph.encrypt_password(new_password)
+        cur.execute("UPDATE user SET password = ? WHERE userid = ?", (new_password, user_id[0][0]))
+        conn.commit()
+        return True
+    except sqlite3.Error as error:
+        print(f"SQLite error: {error}")
+        return False
+    finally:
+        cur.close()
+        conn.close()
+
+
 def validate_login(email, password):
     conn = db_connect()
     cur = conn.cursor()

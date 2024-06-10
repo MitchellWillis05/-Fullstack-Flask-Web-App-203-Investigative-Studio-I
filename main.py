@@ -9,7 +9,6 @@ import user_handler as uh
 import credential_validate as cv
 from datetime import datetime, timedelta
 
-
 # define app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
@@ -31,18 +30,21 @@ def not_found_error(error):
 
 @app.route('/')
 def home():
+    session.pop('password_reset_user', None)
     return render_template('home.html', logged_in=logged_in())
 
 
 @app.route('/login')
 def login():
+    session.pop('password_reset_user', None)
     if logged_in():
         return redirect(url_for('home'))
     return render_template('login.html', logged_in=logged_in())
 
 
-@app.route('/login_redirect', methods=['GET', 'POST'])
+@app.route('/login-redirect', methods=['GET', 'POST'])
 def login_redirect():
+    session.pop('password_reset_user', None)
     try:
         if uh.validate_login(request.form['email'], request.form['password']):
             session["logged_in"] = True
@@ -55,13 +57,15 @@ def login_redirect():
 
 @app.route('/signup')
 def signup():
+    session.pop('password_reset_user', None)
     if logged_in():
         return redirect(url_for('home'))
     return render_template('signup.html', logged_in=logged_in())
 
 
-@app.route('/signup_redirect', methods=['GET', 'POST'])
+@app.route('/signup-redirect', methods=['GET', 'POST'])
 def signup_redirect():
+    session.pop('password_reset_user', None)
     try:
         validation = cv.credential_validation(request.form['username'], request.form['email'],
                                               request.form['password'], request.form['confirm_password'])
@@ -76,13 +80,14 @@ def signup_redirect():
 
 @app.route('/submit-email', methods=['GET', 'POST'])
 def submit_email():
+    session.pop('password_reset_user', None)
     if request.method == 'POST':
         data = request.get_json()
         if not data or 'email' not in data:
-            return jsonify({'message': 'Email is required'}), 400
+            return jsonify({'message': 'Email is required.'}), 400
         email = data.get('email')
         if uh.check_email(email):
-            return jsonify({'message': 'No users match this email'}), 400
+            return jsonify({'message': 'No users match this email.'}), 400
 
         last_request_time = session.get('last_request_time')
         current_time = datetime.now()
@@ -97,7 +102,8 @@ def submit_email():
 
         session['last_request_time'] = str(current_time)
         send_confirmation_code(email)
-        return jsonify({'message': 'Email submitted successfully'}), 200
+        session['password_reset_user'] = uh.fetch_user_by_email(email)
+        return jsonify({'message': 'Email submitted successfully.'}), 200
     else:
         return redirect(url_for('home'))
 
@@ -107,21 +113,52 @@ def submit_code():
     if request.method == 'POST':
         data = request.get_json()
         if not data or 'code' not in data:
-            return jsonify({'message': 'Code is required'}), 400
+            return jsonify({'message': 'Code is .'}), 400
 
         code = data.get('code')
         if code == session['confirmation_code']:
             session.pop('confirmation_code', None)
-            return jsonify({'message': 'Code submitted successfully'}), 200
+
+            return jsonify({'message': 'Code submitted successfully.'}), 200
         else:
-            return jsonify({'message': 'Incorrect Code'}), 400
+            return jsonify({'message': 'Incorrect Code.'}), 400
     else:
         return redirect(url_for('home'))
 
 
 @app.route('/reset-password', methods=['GET', 'POST'])
 def reset_password():
-    return render_template('reset-password.html', logged_in=logged_in())
+    if 'password_reset_user' in session:
+        return render_template('reset-password.html', logged_in=logged_in())
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/reset-password-redirect', methods=['POST', 'GET'])
+def reset_password_redirect():
+    if request.method == 'POST':
+        data = request.get_json()
+
+        if not data or 'password' not in data or 'confirm_password' not in data:
+            return jsonify({'message': 'Please fill in all fields.'}), 400
+
+        password = data.get('password')
+        confirm_password = data.get('confirm_password')
+
+        if 'password_reset_user' in session:
+            if password == confirm_password:
+                if len(password) >= 10:
+                    uh.update_password(session['password_reset_user'], data.get('password'))
+                    session.pop('password_reset_user', None)
+                    return jsonify({'message': 'Password successfully updated.'}), 200
+                else:
+                    return jsonify({'message': 'Password must be at least 10 characters long.'}), 400
+            else:
+                return jsonify({'message': 'Passwords do not match.'}), 400
+        else:
+            return jsonify({'message': 'User session not found or expired.'}), 400
+
+    return redirect(url_for("home"))
 
 
 def logged_in():
@@ -137,6 +174,7 @@ def send_confirmation_code(email):
     session['confirmation_code'] = str(randint(10000, 99999))
     msg.body = "Your email confirmation code is: " + session['confirmation_code']
     mail.send(msg)
+
 
 # run the app
 if __name__ == '__main__':
