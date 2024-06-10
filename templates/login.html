@@ -8,6 +8,8 @@
                     <p>Please enter your email</p>
                   <form id="email-form" onsubmit="submitEmail(event)">
                     <input type="text" id="email-input" autocomplete="off" placeholder="Email">
+                      <div class="error" id="email_popup_error"></div>
+                      <div id="timer"></div>
                     <button class="popup-submit" id="email-submit" type="submit">Send</button>
                   </form>
                 </div>
@@ -15,6 +17,7 @@
                     <p>Please enter your confirmation code</p>
                   <form id="code-form" onsubmit="submitCode(event)">
                     <input class="code-input" type="text" id="code-input" autocomplete="off" placeholder="XXXXX">
+                      <div class="error" id="code_popup_error"></div>
                     <button class="popup-submit" type="submit">Submit</button>
                   </form>
                 </div>

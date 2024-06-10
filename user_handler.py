@@ -63,6 +63,7 @@ def check_email(email):
         cur.close()
         conn.close()
 
+
 def create_new_user(username, email, password):
     conn = db_connect()
     cur = conn.cursor()
@@ -101,3 +102,21 @@ def validate_login(email, password):
         cur.close()
         conn.close()
 
+
+def fetch_user_by_email(email):
+    conn = db_connect()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT userid FROM user WHERE email = ?", (email,))
+        user_fetched = cur.fetchall()
+        return user_fetched
+    except sqlite3.Error as error:
+        print(error.sqlite_errorcode)
+        print(error.sqlite_errorname)
+        return None
+    except IndexError as error:
+        print(error)
+        return None
+    finally:
+        cur.close()
+        conn.close()

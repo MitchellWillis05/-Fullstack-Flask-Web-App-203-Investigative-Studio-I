@@ -6,6 +6,8 @@ const validateEmail = (email) => {
     );
 };
 
+const email_error = document.getElementById('email_popup_error')
+const code_error = document.getElementById('code_popup_error')
 
 function showEmailPopup() {
       document.getElementById('popup-overlay').style.display = 'flex';
@@ -35,28 +37,33 @@ async function submitEmail(event) {
             });
             const result = await response.json();
             if (response.ok) {
+                email_error.innerText = '';
                 alert('Confirmation code successfully sent to ' + email);
                 document.getElementById('email-popup').style.display = 'none';
                 document.getElementById('code-popup').style.display = 'block';
             }
+            else if (response.status === 429) {
+                email_error.innerText = (result.message || 'Failed to submit email.')
+                startTimer(result.remaining_time);
+            }
             else
             {
-                alert(result.message || 'Failed to submit email.');
+                email_error.innerText = (result.message || 'Failed to submit email.')
             }
         }
         catch (error)
         {
             console.error('Error submitting email:', error);
-            alert('An error occurred. Please try again.');
+            email_error.innerText = ('Error, failed to submit email.')
         }
     }
     else if (email === '' || email == null)
     {
-        alert('Please enter your email.');
+        email_error.innerText = ('Please enter your email.')
     }
     else if (!validateEmail(email))
     {
-        alert('Invalid email');
+        email_error.innerText = ('Error, invalid email.')
     }
     esubmit.innerText = "Send"
     submitButton.disabled = false;
@@ -82,17 +89,18 @@ async function submitCode(event) {
               closePopup();
               window.location.href = '/reset-password'
           } else {
-              alert(result.message || 'Failed to submit code.');
+              code_error.innerText = (result.message || 'Failed to submit code.')
           }
       }
       catch (error) {
           console.error('Error submitting code:', error);
-          alert('An error occurred. Please try again.');
+          code_error.innerText = 'An error occurred, please try again'
       }
   }
-  else {
-    alert('Please enter the code.');
-    }
+  else
+  {
+    code_error.innerText = 'Please enter your code'
+  }
 }
 
     function closePopup() {
@@ -103,4 +111,27 @@ async function submitCode(event) {
 
 function stopPropagation(event) {
     event.stopPropagation();
+}
+
+function startTimer(seconds) {
+    let timer = seconds, minutes, remainingSeconds;
+    const timerElement = document.getElementById('timer');
+
+    const interval = setInterval(() => {
+        minutes = parseInt(timer / 60, 10);
+        remainingSeconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        remainingSeconds = remainingSeconds < 10 ? "0" + remainingSeconds : remainingSeconds;
+
+        timerElement.textContent = minutes + ":" + remainingSeconds;
+
+        if (timer <= 0) {
+            clearInterval(interval);
+            timerElement.textContent = '';
+            email_error.innerText = '';
+        } else {
+            --timer;
+        }
+    }, 1000);
 }

@@ -7,7 +7,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from flask_mail import Mail, Message
 import user_handler as uh
 import credential_validate as cv
-import time
+from datetime import datetime, timedelta
 
 
 # define app
@@ -21,7 +21,12 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
-email_timeout_duration = 60
+email_timeout_duration = 60 * 2
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
 
 
 @app.route('/')
@@ -69,21 +74,28 @@ def signup_redirect():
         return render_template('login.html', error=validation, logged_in=logged_in())
 
 
-@app.errorhandler(404)
-def not_found_error(error):
-    return render_template('404.html'), 404
-
-
 @app.route('/submit-email', methods=['GET', 'POST'])
 def submit_email():
     if request.method == 'POST':
-        current_time = time.time()
         data = request.get_json()
         if not data or 'email' not in data:
             return jsonify({'message': 'Email is required'}), 400
         email = data.get('email')
         if uh.check_email(email):
             return jsonify({'message': 'No users match this email'}), 400
+
+        last_request_time = session.get('last_request_time')
+        current_time = datetime.now()
+        if last_request_time:
+            last_request_time = datetime.strptime(last_request_time, '%Y-%m-%d %H:%M:%S.%f')
+            if current_time < last_request_time + timedelta(seconds=email_timeout_duration):
+                remaining_time = (last_request_time +
+                                  timedelta(seconds=email_timeout_duration) -
+                                  current_time).seconds
+                return jsonify({'message': 'Please wait before sending another confirmation email.',
+                                'remaining_time': remaining_time}), 429
+
+        session['last_request_time'] = str(current_time)
         send_confirmation_code(email)
         return jsonify({'message': 'Email submitted successfully'}), 200
     else:
@@ -125,7 +137,6 @@ def send_confirmation_code(email):
     session['confirmation_code'] = str(randint(10000, 99999))
     msg.body = "Your email confirmation code is: " + session['confirmation_code']
     mail.send(msg)
-
 
 # run the app
 if __name__ == '__main__':
