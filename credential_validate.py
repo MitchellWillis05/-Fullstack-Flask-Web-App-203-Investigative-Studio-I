@@ -8,6 +8,7 @@ regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
 
 def is_old_enough(birthdate):
     today = datetime.today()
+    print(today)
     age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
     return age >= 13
 
@@ -53,20 +54,23 @@ def credential_validation(username, email, password, c_password, dob_year, dob_m
     elif uh.check_unique_cred(username, email) == 2:
         print("Unique Credentials Pass")
 
+    print(dob_year, dob_month, dob_day)
+    print(int(dob_year), int(dob_month), int(dob_day))
+
     try:
         birthdate = datetime(year=int(dob_year), month=int(dob_month), day=int(dob_day))
         if not is_old_enough(birthdate):
             print("Age Check Fail")
             return "You must be 13 years or older to create an account, Please try again."
     except ValueError:
-        print("char check fail")
-        return "Invalid Age, Please try again."
+        print("Invalid Date")
+        return "Invalid Date, Please try again."
     print("Valid Age Pass")
 
     print("Validation Passed")
     if uh.create_new_user(username, email,
                           encrypted_password,
-                          dob_day, dob_year, dob_year,
+                          dob_day, dob_month, dob_year,
                           get_star_sign(int(dob_day), int(dob_month))):
         print("User Created")
         return ""

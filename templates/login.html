@@ -1,53 +1,55 @@
 {% extends "base.html" %}
         {% block content %}
-            <script defer src="/static/scripts/forgot_password.js"></script>
+            <main>
+                <script defer src="/static/scripts/forgot_password.js"></script>
 
-            <div id="popup-overlay" class="popup-overlay" onclick="closePopup(event)">
-                <div class="popup-content" id="email-popup" onclick="stopPropagation(event)" >
-                  <h2>Reset password</h2>
-                    <p>Please enter your email</p>
-                  <form id="email-form" onsubmit="submitEmail(event)">
-                    <input type="text" id="email-input" autocomplete="off" placeholder="Email">
-                      <div class="error" id="email_popup_error"></div>
-                      <div id="timer"></div>
-                    <button class="popup-submit" id="email-submit" type="submit">Send</button>
-                  </form>
+                <div id="popup-overlay" class="popup-overlay" onclick="closePopup(event)">
+                    <div class="popup-content" id="email-popup" onclick="stopPropagation(event)" >
+                      <h2>Reset password</h2>
+                        <p>Please enter your email</p>
+                      <form id="email-form" onsubmit="submitEmail(event)">
+                        <input type="text" id="email-input" autocomplete="off" placeholder="Email">
+                          <div class="error" id="email_popup_error"></div>
+                          <div id="timer"></div>
+                        <button class="popup-submit" id="email-submit" type="submit">Send</button>
+                      </form>
+                    </div>
+                    <div class="popup-content" id="code-popup" style="display: none;" onclick="stopPropagation(event)">
+                        <p>Please enter your confirmation code</p>
+                      <form id="code-form" onsubmit="submitCode(event)">
+                        <input class="code-input" type="text" id="code-input" autocomplete="off" placeholder="XXXXX">
+                          <div class="error" id="code_popup_error"></div>
+                        <button class="popup-submit" type="submit">Submit</button>
+                      </form>
+                    </div>
                 </div>
-                <div class="popup-content" id="code-popup" style="display: none;" onclick="stopPropagation(event)">
-                    <p>Please enter your confirmation code</p>
-                  <form id="code-form" onsubmit="submitCode(event)">
-                    <input class="code-input" type="text" id="code-input" autocomplete="off" placeholder="XXXXX">
-                      <div class="error" id="code_popup_error"></div>
-                    <button class="popup-submit" type="submit">Submit</button>
-                  </form>
+                <script defer src="static/scripts/login_form_validation.js"></script>
+                <div class="wrapper">
+                    <form id="login" action="{{ url_for('login_redirect')}}" method="post">
+                        <h1>Login</h1>
+                        <div class="input-box">
+                            <input type="text" placeholder="Email" id="email" name="email">
+                            <i class='bx bxs-envelope' ></i>
+                        </div>
+                        <div class="input-box">
+                            <input type="password" placeholder="Password" id="password" name="password">
+                            <i class='bx bxs-lock-alt' ></i>
+                        </div>
+
+                        <div class="remember-forgot">
+                            <label for="remember"><input type="checkbox" id="remember">Remember me</label>
+                            <a href="#" onclick="showEmailPopup()">Forgot password?</a>
+                        </div>
+
+                        <div class="error" id="error">{{ error }}</div>
+
+                        <button type="submit" class="submit_button">Login</button>
+
+                        <div class="register-link">
+                            <p>Don't have an account? <a href="{{ url_for('signup')}}">Register</a></p>
+                        </div>
+                    </form>
                 </div>
-            </div>
-            <script defer src="static/scripts/login_form_validation.js"></script>
-            <div class="wrapper">
-                <form id="login" action="{{ url_for('login_redirect')}}" method="post">
-                    <h1>Login</h1>
-                    <div class="input-box">
-                        <input type="text" placeholder="Email" id="email" name="email">
-                        <i class='bx bxs-envelope' ></i>
-                    </div>
-                    <div class="input-box">
-                        <input type="password" placeholder="Password" id="password" name="password">
-                        <i class='bx bxs-lock-alt' ></i>
-                    </div>
-
-                    <div class="remember-forgot">
-                        <label for="remember"><input type="checkbox" id="remember">Remember me</label>
-                        <a href="#" onclick="showEmailPopup()">Forgot password?</a>
-                    </div>
-
-                    <div class="error" id="error">{{ error }}</div>
-
-                    <button type="submit" class="submit_button">Login</button>
-
-                    <div class="register-link">
-                        <p>Don't have an account? <a href="{{ url_for('signup')}}">Register</a></p>
-                    </div>
-                </form>
-            </div>
+            </main>
 
         {% endblock %}

@@ -76,7 +76,7 @@ def signup_redirect():
         dob_year = request.form['dob_year']
         validation = cv.credential_validation(username, email,
                                               password, confirm_password,
-                                              dob_day, dob_month, dob_year)
+                                              dob_year, dob_month, dob_day)
 
         if len(validation) > 0:
             return render_template('signup.html', error=validation, logged_in=logged_in())
@@ -166,6 +166,11 @@ def reset_password_redirect():
             return jsonify({'message': 'User session not found or expired.'}), 400
 
     return redirect(url_for("home"))
+
+
+@app.route('/profile')
+def profile():
+    return render_template("profile.html")
 
 
 def logged_in():
