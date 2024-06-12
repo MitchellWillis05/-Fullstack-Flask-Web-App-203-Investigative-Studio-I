@@ -74,17 +74,9 @@ def signup_redirect():
         dob_day = request.form['dob_day']
         dob_month = request.form['dob_month']
         dob_year = request.form['dob_year']
-        try:
-            validation = cv.credential_validation(username, email,
-                                                  password, confirm_password)
-        except werkzeug.exceptions.BadRequest as e:
-            return redirect(url_for("login"))
-        try:
-            birthdate = datetime(year=int(dob_year), month=int(dob_month), day=int(dob_day))
-            if not is_old_enough(birthdate):
-                return redirect(url_for('signup'))
-        except ValueError:
-            return redirect(url_for('signup'))
+        validation = cv.credential_validation(username, email,
+                                              password, confirm_password,
+                                              dob_day, dob_month, dob_year)
 
         if len(validation) > 0:
             return render_template('signup.html', error=validation, logged_in=logged_in())
@@ -181,12 +173,6 @@ def logged_in():
         return True
     else:
         return False
-
-
-def is_old_enough(birthdate):
-    today = datetime.today()
-    age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
-    return age >= 13
 
 
 def send_confirmation_code(email):

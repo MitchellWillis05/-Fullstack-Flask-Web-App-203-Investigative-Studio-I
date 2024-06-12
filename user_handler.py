@@ -64,11 +64,14 @@ def check_email(email):
         conn.close()
 
 
-def create_new_user(username, email, password):
+def create_new_user(username, email, password, day, month, year, starsign):
     conn = db_connect()
     cur = conn.cursor()
     try:
-        cur.execute("INSERT INTO user (username, email, password) VALUES (?,?,?)", (username, email.lower(), password))
+        cur.execute(
+            "INSERT INTO user (username, email, password, dob_day, dob_month, dob_year, starsign) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (username, email.lower(), password, int(day), int(month), int(year), starsign)
+        )
         conn.commit()
         return True
     except sqlite3.Error as error:
