@@ -6,6 +6,7 @@ const errorElement = document.getElementById('error')
 const dayInput = document.getElementById('dob-day');
 const monthInput = document.getElementById('dob-month');
 const yearInput = document.getElementById('dob-year');
+const gender = document.getElementById('gender');
 
 const validateEmail = (email) => {
   return String(email)
@@ -61,6 +62,12 @@ form.addEventListener('submit', (e)=>{
     {
         e.preventDefault();
         errorElement.textContent = 'Please enter a valid date of birth.';
+    }
+
+    else if (gender.value === '' || gender.value == null)
+    {
+        e.preventDefault();
+        errorElement.textContent = 'Please select your gender.';
     }
 
     else if (password.value === '' || password.value == null )

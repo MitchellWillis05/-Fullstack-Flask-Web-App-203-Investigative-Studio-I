@@ -3,69 +3,33 @@
             <div class="container">
                     <div class="sidebar">
                         <div class="avatar">
-                            <img src="https://via.placeholder.com/100" alt="Avatar">
+                            <img src="https://via.placeholder.com/200" alt="Avatar">
                         </div>
                         <div class="info">
                             <p><strong>Username</strong></p>
                             <p>{{username}}<a href="#">change</a></p>
                             <p><strong>Email</strong></p>
                             <p>{{email}}<a href="#">change</a></p>
+                            <p><strong>Gender</strong></p>
+                            <p>{{gender}}<a href="#">change</a></p>
+                            <p><strong>Dated of birth</strong></p>
+                            <p>{{dob}}<a href="#">change</a></p>
                             <p><strong>Administration</strong></p>
-                            <p><a href="#">Download your data</a></p>
+                            <p><a href="#">Logout</a></p>
                             <p><a href="#" class="delete">Delete your account</a></p>
                         </div>
                     </div>
                     <div class="main-content">
                         <h1>User Profile</h1>
+                        <div class="starsign-img">
+                            <img src="https://via.placeholder.com/250" alt="Starsign">
+                        </div>
+
                         <form>
-                            <div class="form-group">
-                                <label for="first-name">First name</label>
-                                <input type="text" id="first-name" placeholder="First name">
+                            <div class="starsign-wrapper">
+                                <h1 class="starsign-text">placeholder</h1>
+                                <p class="starsign-text">placeholder</p>
                             </div>
-                            <div class="form-group">
-                                <label for="last-name">Last name</label>
-                                <input type="text" id="last-name" placeholder="Last name">
-                            </div>
-                            <div class="form-group">
-                                <label for="gender">Gender</label>
-                                <select id="gender">
-                                    <option>MALE</option>
-                                    <option>FEMALE</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="dob">Date of birth</label>
-                                <div class="dob">
-                                    <select>
-                                        <option>2005</option>
-                                        <!-- Add more years as needed -->
-                                    </select>
-                                    <select>
-                                        <option>3</option>
-                                        <!-- Add more months as needed -->
-                                    </select>
-                                    <select>
-                                        <option>11</option>
-                                        <!-- Add more days as needed -->
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="location">Location</label>
-                                <input type="text" id="location" placeholder="Location">
-                            </div>
-                            <div class="form-group">
-                                <label for="language">Main language</label>
-                                <select id="language">
-                                    <option>ENGLISH</option>
-                                    <!-- Add more languages as needed -->
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="bio">Biography</label>
-                                <textarea id="bio" placeholder="SOMETHING ABOUT YOURSELF :)"></textarea>
-                            </div>
-                            <button type="submit" class="submit-button">SUBMIT</button>
                         </form>
                     </div>
                 </div>

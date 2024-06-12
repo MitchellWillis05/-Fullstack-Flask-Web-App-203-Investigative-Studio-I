@@ -13,7 +13,7 @@ def is_old_enough(birthdate):
     return age >= 13
 
 
-def credential_validation(username, email, password, c_password, dob_year, dob_month, dob_day):
+def credential_validation(username, email, password, c_password, dob_year, dob_month, dob_day, gender):
     encrypted_password = ph.encrypt_password(password)
 
     # Check username length
@@ -71,7 +71,7 @@ def credential_validation(username, email, password, c_password, dob_year, dob_m
     if uh.create_new_user(username, email,
                           encrypted_password,
                           dob_day, dob_month, dob_year,
-                          get_star_sign(int(dob_day), int(dob_month))):
+                          get_star_sign(int(dob_day), int(dob_month)), gender):
         print("User Created")
         return ""
     else:

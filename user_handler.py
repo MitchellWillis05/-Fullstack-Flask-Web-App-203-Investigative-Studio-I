@@ -64,13 +64,13 @@ def check_email(email):
         conn.close()
 
 
-def create_new_user(username, email, password, day, month, year, starsign):
+def create_new_user(username, email, password, day, month, year, starsign, gender):
     conn = db_connect()
     cur = conn.cursor()
     try:
         cur.execute(
-            "INSERT INTO user (username, email, password, dob_day, dob_month, dob_year, starsign) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            (username, email.lower(), password, int(day), int(month), int(year), starsign)
+            "INSERT INTO user (username, email, password, dob_day, dob_month, dob_year, starsign, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (username, email.lower(), password, int(day), int(month), int(year), starsign, gender)
         )
         conn.commit()
         return True

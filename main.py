@@ -67,21 +67,25 @@ def signup():
 def signup_redirect():
     session.pop('password_reset_user', None)
     if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
-        confirm_password = request.form['confirm_password']
-        dob_day = request.form['dob_day']
-        dob_month = request.form['dob_month']
-        dob_year = request.form['dob_year']
-        validation = cv.credential_validation(username, email,
-                                              password, confirm_password,
-                                              dob_year, dob_month, dob_day)
+        try:
+            username = request.form['username']
+            email = request.form['email']
+            password = request.form['password']
+            confirm_password = request.form['confirm_password']
+            dob_day = request.form['dob_day']
+            dob_month = request.form['dob_month']
+            dob_year = request.form['dob_year']
+            gender = request.form['gender']
+            validation = cv.credential_validation(username, email,
+                                                  password, confirm_password,
+                                                  dob_year, dob_month, dob_day, gender)
 
-        if len(validation) > 0:
-            return render_template('signup.html', error=validation, logged_in=logged_in())
-        else:
-            return render_template('login.html', error=validation, logged_in=logged_in())
+            if len(validation) > 0:
+                return render_template('signup.html', error=validation, logged_in=logged_in())
+            else:
+                return render_template('login.html', error=validation, logged_in=logged_in())
+        except werkzeug.exceptions.BadRequest as er:
+            return redirect(url_for("login"))
     return redirect(url_for("login"))
 
 
