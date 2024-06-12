@@ -48,10 +48,14 @@ def login():
 def login_redirect():
     session.pop('password_reset_user', None)
     if request.method == 'POST':
-        email = request.form['email']
-        if uh.validate_login(email, request.form['password']):
-            session["current_user_logged_in"] = uh.fetch_user_by_email(email)
-            return redirect(url_for("home"))
+        print("post recieved")
+        try:
+            email = request.form['email']
+            if uh.validate_login(email, request.form['password']):
+                session["current_user_logged_in"] = uh.fetch_user_by_email(email)
+                return redirect(url_for("home"))
+        except werkzeug.exceptions.BadRequest as er:
+            return redirect(url_for("login"))
     return redirect(url_for("login"))
 
 

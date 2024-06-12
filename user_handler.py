@@ -53,7 +53,7 @@ def check_email(email):
     conn = db_connect()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT * FROM user WHERE email = ?", (email,))
+        cur.execute("SELECT * FROM user WHERE email = ?", (email.lower(),))
         results = cur.fetchall()
         if len(results) == 0:
             return True  # email does not exist in database
@@ -103,9 +103,9 @@ def validate_login(email, password):
     conn = db_connect()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT password FROM user WHERE email = ?", (email,))
+        cur.execute("SELECT password FROM user WHERE email = ?", (email.lower(),))
         password_fetched = cur.fetchall()
-
+        print(email, password_fetched)
         if ph.verify_password(password, password_fetched[0][0]):
             return True
         else:
@@ -125,7 +125,7 @@ def fetch_user_by_email(email):
     conn = db_connect()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT userid FROM user WHERE email = ?", (email,))
+        cur.execute("SELECT userid FROM user WHERE email = ?", (email.lower(),))
         user_fetched = cur.fetchall()
         return user_fetched[0][0]
     except sqlite3.Error as error:
