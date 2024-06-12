@@ -388,10 +388,41 @@ main {
 .sidebar .info a {
     color: #007bff;
     text-decoration: none;
+    display: inline-block;
+    position: relative;
+}
+
+.sidebar .info a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #007bff;
+    transition: width 0.3s ease;
+}
+
+.sidebar .info a:hover::after {
+    width: 100%;
 }
 
 .sidebar .info .delete {
     color: #dc3545;
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+}
+
+.sidebar .info .delete::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #dc3545;
+    transition: width 0.3s ease;
 }
 
 .main-content {
