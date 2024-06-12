@@ -3,6 +3,9 @@ const password = document.getElementById('password')
 const confirm_password = document.getElementById('confirm_password')
 const form = document.getElementById('signup')
 const errorElement = document.getElementById('error')
+const dayInput = document.getElementById('dob-day');
+const monthInput = document.getElementById('dob-month');
+const yearInput = document.getElementById('dob-year');
 
 const validateEmail = (email) => {
   return String(email)
@@ -12,8 +15,38 @@ const validateEmail = (email) => {
     );
 };
 
+function isValidDate(day, month, year)
+{
+    const date = new Date(year, month - 1, day);
+    return (
+        date.getFullYear() === year &&
+        date.getMonth() === month - 1 &&
+        date.getDate() === day
+    );
+}
+
+function isOldEnough(day, month, year)
+{
+    const today = new Date();
+    const birthDate = new Date(year, month - 1, day);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+        return age - 1 >= 13;
+    }
+    return age >= 13;
+}
+
 form.addEventListener('submit', (e)=>{
     let messages = []
+    const day = parseInt(dayInput.value, 10);
+    const month = parseInt(monthInput.value, 10);
+    const year = parseInt(yearInput.value, 10);
+
     if (username.value === '' || username.value == null ){
         e.preventDefault()
         errorElement.innerText = ('Username is required')
@@ -22,6 +55,12 @@ form.addEventListener('submit', (e)=>{
     else if (email.value === '' || email.value == null ){
         e.preventDefault()
         errorElement.innerText = ('Email is required')
+    }
+
+    else if (!isValidDate(day, month, year))
+    {
+        e.preventDefault();
+        errorElement.textContent = 'Please enter a valid date of birth.';
     }
 
     else if (password.value === '' || password.value == null )
@@ -47,6 +86,12 @@ form.addEventListener('submit', (e)=>{
         errorElement.innerText = ('Invalid email')
     }
 
+    else if (!isOldEnough(day, month, year))
+    {
+        e.preventDefault();
+        errorElement.textContent = 'You must be at least 13 years old to sign up.';
+    }
+
     else if (password.value.length < 10 )
     {
         e.preventDefault()
@@ -59,3 +104,5 @@ form.addEventListener('submit', (e)=>{
         errorElement.innerText = ('Passwords do not match')
     }
 })
+
+

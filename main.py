@@ -66,16 +66,31 @@ def signup():
 @app.route('/signup-redirect', methods=['GET', 'POST'])
 def signup_redirect():
     session.pop('password_reset_user', None)
-    try:
-        validation = cv.credential_validation(request.form['username'], request.form['email'],
-                                              request.form['password'], request.form['confirm_password'])
-    except werkzeug.exceptions.BadRequest as e:
-        return redirect(url_for("login"))
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        dob_day = request.form['dob_day']
+        dob_month = request.form['dob_month']
+        dob_year = request.form['dob_year']
+        try:
+            validation = cv.credential_validation(username, email,
+                                                  password, confirm_password)
+        except werkzeug.exceptions.BadRequest as e:
+            return redirect(url_for("login"))
+        try:
+            birthdate = datetime(year=int(dob_year), month=int(dob_month), day=int(dob_day))
+            if not is_old_enough(birthdate):
+                return redirect(url_for('signup'))
+        except ValueError:
+            return redirect(url_for('signup'))
 
-    if len(validation) > 0:
-        return render_template('signup.html', error=validation, logged_in=logged_in())
-    else:
-        return render_template('login.html', error=validation, logged_in=logged_in())
+        if len(validation) > 0:
+            return render_template('signup.html', error=validation, logged_in=logged_in())
+        else:
+            return render_template('login.html', error=validation, logged_in=logged_in())
+    return redirect(url_for("login"))
 
 
 @app.route('/submit-email', methods=['GET', 'POST'])
@@ -166,6 +181,12 @@ def logged_in():
         return True
     else:
         return False
+
+
+def is_old_enough(birthdate):
+    today = datetime.today()
+    age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+    return age >= 13
 
 
 def send_confirmation_code(email):
