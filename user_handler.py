@@ -111,8 +111,7 @@ def validate_login(email, password):
         else:
             return False
     except sqlite3.Error as error:
-        print(error.sqlite_errorcode)
-        print(error.sqlite_errorname)
+        print(f"SQLite error: {error}")
         return False
     except IndexError as error:
         print(error)
@@ -128,11 +127,32 @@ def fetch_user_by_email(email):
     try:
         cur.execute("SELECT userid FROM user WHERE email = ?", (email,))
         user_fetched = cur.fetchall()
-        return user_fetched
+        return user_fetched[0][0]
     except sqlite3.Error as error:
-        print(error.sqlite_errorcode)
-        print(error.sqlite_errorname)
+        print(f"SQLite error: {error}")
         return None
+    except IndexError as error:
+        print(error)
+        return None
+    finally:
+        cur.close()
+        conn.close()
+
+
+def fetch_cred_by_id(userid):
+    conn = db_connect()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT username, email,"
+                    " dob_day, dob_month,"
+                    " dob_year, starsign,"
+                    " gender FROM user WHERE userid = ?", (userid,))
+        data_fetched = cur.fetchall()
+        return data_fetched[0]
+    except sqlite3.Error as error:
+        print(f"SQLite error: {error}")
+        return None
+
     except IndexError as error:
         print(error)
         return None

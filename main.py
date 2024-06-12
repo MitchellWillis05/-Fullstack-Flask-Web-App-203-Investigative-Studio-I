@@ -7,7 +7,9 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from flask_mail import Mail, Message
 import user_handler as uh
 import credential_validate as cv
+import starsign_data as sd
 from datetime import datetime, timedelta
+
 
 # define app
 app = Flask(__name__)
@@ -45,14 +47,12 @@ def login():
 @app.route('/login-redirect', methods=['GET', 'POST'])
 def login_redirect():
     session.pop('password_reset_user', None)
-    try:
-        if uh.validate_login(request.form['email'], request.form['password']):
-            session["logged_in"] = True
+    if request.method == 'POST':
+        email = request.form['email']
+        if uh.validate_login(email, request.form['password']):
+            session["current_user_logged_in"] = uh.fetch_user_by_email(email)
             return redirect(url_for("home"))
-        else:
-            return render_template("login.html", error="Incorrect username / password", logged_in=logged_in())
-    except werkzeug.exceptions.BadRequest as er:
-        return redirect(url_for("login"))
+    return redirect(url_for("login"))
 
 
 @app.route('/signup')
@@ -174,11 +174,29 @@ def reset_password_redirect():
 
 @app.route('/profile')
 def profile():
-    return render_template("profile.html")
+    session.pop('password_reset_user', None)
+    if logged_in():
+        data = uh.fetch_cred_by_id(session['current_user_logged_in'])
+        # username = 0 email = 1 day = 2 month = 3 year = 4 starsign = 5 gender = 6
+        if len(str(data[3])) == 1:
+            dob = str(data[2]) + '/0' + str(data[3]) + '/' + str(data[4])
+        else:
+            dob = str(data[2]) + '/' + str(data[4]) + '/' + str(data[3])
+        starsign_data = sd.get_starsign_info(data[5])
+        return render_template("profile.html", username=data[0], email=data[1],
+                               gender=data[6], dob=dob, starsign=data[5], s_desc=starsign_data, logged_in=logged_in())
+    return redirect(url_for('home'))
+
+
+@app.route('/logout')
+def logout():
+    session.pop('password_reset_user', None)
+    session.pop('current_user_logged_in', None)
+    return redirect(url_for('login'))
 
 
 def logged_in():
-    if 'logged_in' in session:
+    if 'current_user_logged_in' in session:
         return True
     else:
         return False
