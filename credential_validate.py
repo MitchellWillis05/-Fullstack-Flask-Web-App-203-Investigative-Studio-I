@@ -13,34 +13,42 @@ def is_old_enough(birthdate):
     return age >= 13
 
 
+def email_validator(email):
+    if not re.fullmatch(regex, email):
+        print("Email Regex Fail")
+        return False
+    else:
+        return True
+
+
 def credential_validation(username, email, password, c_password, dob_year, dob_month, dob_day, gender):
     encrypted_password = ph.encrypt_password(password)
 
     # Check username length
-    if len(username) <= 3 | len(username) >= 15:
+    if len(username) <= 3 or len(username) >= 15:
         print("Username Length Fail")
-        return "An error occurred, please try again"
+        return "Username must be between 3 and 15 characters"
 
     print("Username Length Pass")
 
     # Check email format
     if not re.fullmatch(regex, email):
         print("Email Regex Fail")
-        return "An error occurred, please try again"
+        return "Invalid Email Address"
 
     print("Email Regex Pass")
 
     # Check password length
     if len(c_password) < 10:
         print("Password Length Fail")
-        return "An error occurred, please try again"
+        return "password must be at least 10 characters"
 
     print("Password Length Pass")
 
     # Verify password match
     if not ph.verify_password(c_password, encrypted_password):
         print("Password Match Fail")
-        return "An error occurred, please try again"
+        return "passwords must match"
 
     print("Password Match Pass")
 

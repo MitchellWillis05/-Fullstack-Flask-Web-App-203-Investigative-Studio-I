@@ -37,39 +37,33 @@ def home():
     return render_template('home.html', logged_in=logged_in())
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     session.pop('password_reset_user', None)
-    if logged_in():
-        return redirect(url_for('home'))
-    return render_template('login.html', logged_in=logged_in())
-
-
-@app.route('/login-redirect', methods=['GET', 'POST'])
-def login_redirect():
-    session.pop('password_reset_user', None)
     if request.method == 'POST':
-        print("post recieved")
         try:
             email = request.form['email']
-            if uh.validate_login(email, request.form['password']):
-                session["current_user_logged_in"] = uh.fetch_user_by_email(email)
-                return redirect(url_for("home"))
-        except werkzeug.exceptions.BadRequest as er:
-            return redirect(url_for("login"))
-    return redirect(url_for("login"))
+            password = request.form['password']
+            if cv.email_validator(email):
+                if uh.validate_login(email, password):
+                    session["current_user_logged_in"] = uh.fetch_user_by_email(email)
+                    return jsonify({'message': 'login Successful.'}), 200
+                else:
+                    return jsonify({'message': 'Email or password is incorrect.'}), 400
+            else:
+                return jsonify({'message': 'Invalid email.'}), 400
+        except werkzeug.exceptions.BadRequest:
+            return jsonify({'message': 'Please fill in all fields.'}), 400
+
+    elif request.method == 'GET':
+        if logged_in():
+            return redirect(url_for('home'))
+        else:
+            return render_template('login.html', logged_in=logged_in())
 
 
-@app.route('/signup')
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    session.pop('password_reset_user', None)
-    if logged_in():
-        return redirect(url_for('home'))
-    return render_template('signup.html', logged_in=logged_in())
-
-
-@app.route('/signup-redirect', methods=['GET', 'POST'])
-def signup_redirect():
     session.pop('password_reset_user', None)
     if request.method == 'POST':
         try:
@@ -86,12 +80,19 @@ def signup_redirect():
                                                   dob_year, dob_month, dob_day, gender)
 
             if len(validation) > 0:
-                return render_template('signup.html', error=validation, logged_in=logged_in())
+                return jsonify({'message': validation}), 400
             else:
-                return render_template('login.html', error=validation, logged_in=logged_in())
-        except werkzeug.exceptions.BadRequest as er:
-            return redirect(url_for("login"))
-    return redirect(url_for("login"))
+                return jsonify({'message': 'Signup Successful.'}), 200
+        except werkzeug.exceptions.BadRequest:
+            return jsonify({'message': 'Please fill in all fields.'}), 400
+        except ValueError:
+            return jsonify({'message': 'Please fill in all fields.'}), 400
+
+    elif request.method == 'GET':
+        if logged_in():
+            return redirect(url_for('home'))
+        else:
+            return render_template('signup.html', logged_in=logged_in())
 
 
 @app.route('/submit-email', methods=['GET', 'POST'])

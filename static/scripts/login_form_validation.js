@@ -1,40 +1,30 @@
-const email = document.getElementById('email')
-const password = document.getElementById('password')
-const form = document.getElementById('login')
-const errorElement = document.getElementById('error')
 
-const validateEmail = (email) => {
-  return String(email)
-    .toLowerCase()
-    .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
-};
+async function submit_entry(){
+    const form = document.getElementById('login')
+    const formData = new FormData(form);
+    const error = document.getElementById('error');
 
-form.addEventListener('submit', (e)=>{
-    let messages = []
-
-    if (email.value === '' || email.value == null ){
-        e.preventDefault()
-        errorElement.innerText = ('Email is required')
-    }
-
-    else if (password.value === '' || password.value == null )
+    try
     {
-        e.preventDefault()
-        errorElement.innerText = ('Password is required')
+        const response = await fetch('/login',
+            {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                window.location.href = '/';
+            } else {
+                const result = await response.json();
+
+                error.innerText = result.message || 'Failed to login.';
+            }
     }
 
-    else if(!validateEmail(email.value)){
-        e.preventDefault()
-        errorElement.innerText = ('Invalid email')
-    }
-
-    else if (password.value.length < 10 )
+    catch (error)
     {
-        e.preventDefault()
-        errorElement.innerText = ('Password must be 10 characters or longer')
-
+        console.error('Error submitting entry:', error);
+        error.innerText = 'An error occurred, please try again.';
     }
-
-})
+}

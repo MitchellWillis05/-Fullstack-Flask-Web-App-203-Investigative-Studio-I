@@ -3,7 +3,7 @@
     <main>
         <script defer src="static/scripts/signup_form_validation.js"></script>
         <div class="wrapper">
-            <form id="signup" action="{{ url_for('signup_redirect')}}" method="post">
+            <form id="signup">
                 <h1>Sign Up</h1>
                 <div class="input-box">
                     <input type="text" placeholder="Username" id="username" name="username">
@@ -39,7 +39,7 @@
                     <i class='bx bxs-lock-alt' ></i>
                 </div>
                 <div class="error" id="error">{{ error }}</div>
-                <button type="submit" class="submit_button">Sign Up</button>
+                <button type="button" class="submit_button" onclick="submit_entry()">Sign Up</button>
                 <div class="register-link">
                     <p>Already have an account? <a href="{{ url_for('login')}}">Login</a></p>
                 </div>
