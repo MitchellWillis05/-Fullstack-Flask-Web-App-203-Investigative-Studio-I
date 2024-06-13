@@ -222,7 +222,7 @@ def journal():
 
     if logged_in():
         entry_data = jh.fetch_entries_by_id(session['current_user_logged_in'])
-        return render_template('journal.html', logged_in=logged_in(), entry_data = entry_data)
+        return render_template('journal.html', logged_in=logged_in(), entry_data=jh.get_journal_preview(entry_data))
     return redirect(url_for('home'))
 
 

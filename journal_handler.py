@@ -49,3 +49,22 @@ def fetch_entries_by_id(userid):
     finally:
         cur.close()
         conn.close()
+
+
+def truncate_string(s, length):
+    if len(s) > length:
+        return s[:length] + "..."
+    return s
+
+
+def get_journal_preview(data):
+    modified_data = []
+
+    for row in data:
+        row_list = list(row)
+        row_list[5] = truncate_string(row_list[5], 35)
+        print(row_list[5])
+        modified_row = tuple(row_list)
+        modified_data.append(modified_row)
+
+    return modified_data

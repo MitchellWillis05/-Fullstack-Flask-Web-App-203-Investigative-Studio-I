@@ -1,3 +1,4 @@
+
 function openForm()
 {
     document.getElementById("newEntryForm").style.display = "block";
