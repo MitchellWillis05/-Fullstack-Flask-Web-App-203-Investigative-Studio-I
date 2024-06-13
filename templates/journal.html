@@ -2,31 +2,32 @@
     {%block content%}
 
         <body>
+        <script defer src="/static/scripts/journal_entry.js"></script>
             <div class="journal-container">
                 <div class="journal-header">
                     <h1>Your Journal</h1>
-                    <button class="journal-add-entry-btn" onclick="openForm()"><strong>ADD  </strong><i class='bx bx-plus-medical'></i></button>
+                    <button class="journal-add-entry-btn" onclick="openForm()"><strong>ADD   </strong><i class='bx bx-plus-medical'></i></button>
                 </div>
                 <table class="journal-table">
                     <thead>
                         <tr>
                             <th class="top-right-curve">Date</th>
                             <th>Title</th>
-                            <th class="top-left-curve">Content</th>
+                            <th>Content</th>
+                            <th>Mood</th>
+                            <th class="top-left-curve" >Color</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr onclick="window.location='entry/1';">
-                            <td>2023-06-12</td>
-                            <td>Flying in the Sky</td>
-                            <td>I was flying in the sky above a beautiful landscape...</td>
+                        {% for entryid, userid, title, mood, color ,content, date in entry_data %}
+                        <tr onclick="window.location='entry/{{ entryid }}';">
+                            <td>{{ date }}</td>
+                            <td>{{ title }}</td>
+                            <td>{{ content }}</td>
+                            <td>{{ mood }}</td>
+                            <td>{{ color }}</td>
                         </tr>
-                        <tr onclick="window.location='entry/2';">
-                            <td>2023-06-13</td>
-                            <td>A Visit to the Past</td>
-                            <td>I visited my childhood home and relived old memories...</td>
-                        </tr>
-                        <!-- Additional entries can be added similarly -->
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -37,83 +38,53 @@
 
                     <div class="journal-form-group">
                         <label for="title"><b>Title</b></label>
-                        <input type="text" id="title" name="title" placeholder="Enter Title" required>
+                        <p style="font-size: 12px; margin-bottom: 5px;">(max 25 char)</p>
+                        <input type="text" id="title" name="title" placeholder="Enter Title" maxlength="25">
                     </div>
 
                     <div class="journal-form-group">
                         <label><b>Mood</b></label>
                         <div class="journal-mood-selector">
-                            <button type="button" class="journal-mood-btn" onclick="selectMood(this)">😊</button>
-                            <button type="button" class="journal-mood-btn" onclick="selectMood(this)">😢</button>
-                            <button type="button" class="journal-mood-btn" onclick="selectMood(this)">😡</button>
-                            <button type="button" class="journal-mood-btn" onclick="selectMood(this)">😨</button>
-                            <button type="button" class="journal-mood-btn" onclick="selectMood(this)">😴</button>
+                            <button type="button" class="journal-mood-btn" onclick="selectMood(this, 'happy')">😊</button>
+                            <button type="button" class="journal-mood-btn" onclick="selectMood(this, 'sad')">😢</button>
+                            <button type="button" class="journal-mood-btn" onclick="selectMood(this, 'angry')">😡</button>
+                            <button type="button" class="journal-mood-btn" onclick="selectMood(this, 'scared')">😨</button>
+                            <button type="button" class="journal-mood-btn" onclick="selectMood(this, 'tired')">😴</button>
                         </div>
-                        <input type="hidden" id="mood" name="mood" required>
+                        <input type="hidden" id="mood" name="mood">
                     </div>
 
                     <div class="journal-form-group">
                         <label for="color"><b>Color</b></label>
                         <div class="journal-color-selector">
                             <!-- 24 colors as buttons -->
-                            <button type="button" class="journal-color-btn" style="background-color: #FF6633;" onclick="selectColor(this, '#FF6633')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #FFB399;" onclick="selectColor(this, '#FFB399')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #FF33FF;" onclick="selectColor(this, '#FF33FF')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #FFFF99;" onclick="selectColor(this, '#FFFF99')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #00B3E6;" onclick="selectColor(this, '#00B3E6')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #E6B333;" onclick="selectColor(this, '#E6B333')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #3366E6;" onclick="selectColor(this, '#3366E6')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #999966;" onclick="selectColor(this, '#999966')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #99FF99;" onclick="selectColor(this, '#99FF99')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #B34D4D;" onclick="selectColor(this, '#B34D4D')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #80B300;" onclick="selectColor(this, '#80B300')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #809900;" onclick="selectColor(this, '#809900')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #E6B3B3;" onclick="selectColor(this, '#E6B3B3')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #6680B3;" onclick="selectColor(this, '#6680B3')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #66991A;" onclick="selectColor(this, '#66991A')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #FF99E6;" onclick="selectColor(this, '#FF99E6')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #CCFF1A;" onclick="selectColor(this, '#CCFF1A')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #FF1A66;" onclick="selectColor(this, '#FF1A66')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #E6331A;" onclick="selectColor(this, '#E6331A')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #33FFCC;" onclick="selectColor(this, '#33FFCC')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #66994D;" onclick="selectColor(this, '#66994D')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #B366CC;" onclick="selectColor(this, '#B366CC')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #4D8000;" onclick="selectColor(this, '#4D8000')"></button>
-                            <button type="button" class="journal-color-btn" style="background-color: #B33300;" onclick="selectColor(this, '#B33300')"></button>
+                            <button type="button" class="journal-color-btn" style="background-color: yellow;" onclick="selectColor(this, 'yellow')"></button>
+                            <button type="button" class="journal-color-btn" style="background-color: red;" onclick="selectColor(this, 'red')"></button>
+                            <button type="button" class="journal-color-btn" style="background-color: blue;" onclick="selectColor(this, 'blue')"></button>
+                            <button type="button" class="journal-color-btn" style="background-color: orange;" onclick="selectColor(this, 'orange')"></button>
+                            <button type="button" class="journal-color-btn" style="background-color: green;" onclick="selectColor(this, 'green')"></button>
+                            <button type="button" class="journal-color-btn" style="background-color: greenyellow;" onclick="selectColor(this, 'greenyellow')"></button>
+                            <button type="button" class="journal-color-btn" style="background-color: purple;" onclick="selectColor(this, 'purple')"></button>
+                            <button type="button" class="journal-color-btn" style="background-color: pink;" onclick="selectColor(this, 'pink')"></button>
+                            <button type="button" class="journal-color-btn" style="background-color: whitesmoke;" onclick="selectColor(this, 'white')"></button>
+                            <button type="button" class="journal-color-btn" style="background-color: black;" onclick="selectColor(this, 'black')"></button>
                         </div>
-                        <input type="hidden" id="color" name="color" required>
+                        <input type="hidden" id="color" name="color">
                     </div>
 
                     <div class="journal-form-group">
                         <label for="content"><b>Content</b></label>
-                        <textarea id="content" name="content" placeholder="Write your dream here..." required></textarea>
+                        <p style="font-size: 12px; margin-bottom: 5px;">(max 300 char)</p>
+                        <textarea id="content" name="content" placeholder="Write your dream here..." maxlength="300"></textarea>
                     </div>
 
-                    <button type="submit" class="journal-btn">Save</button>
+                    <div class="error" id="error"></div>
+
+                    <button type="submit" class="journal-btn" onclick="submit_entry(event)">Save</button>
                     <button type="button" class="journal-btn cancel" onclick="closeForm()">Close</button>
                 </form>
             </div>
 
-            <script>
-                function openForm() {
-                    document.getElementById("newEntryForm").style.display = "block";
-                }
 
-                function closeForm() {
-                    document.getElementById("newEntryForm").style.display = "none";
-                }
-
-                function selectMood(button) {
-                    document.querySelectorAll('.journal-mood-btn').forEach(btn => btn.classList.remove('selected'));
-                    button.classList.add('selected');
-                    document.getElementById('mood').value = button.textContent.trim();
-                }
-
-                function selectColor(button, color) {
-                    document.querySelectorAll('.journal-color-btn').forEach(btn => btn.classList.remove('selected'));
-                    button.classList.add('selected');
-                    document.getElementById('color').value = color;
-                }
-            </script>
         </body>
     {%endblock%}

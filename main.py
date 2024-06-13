@@ -8,6 +8,7 @@ from flask_mail import Mail, Message
 import user_handler as uh
 import credential_validate as cv
 import starsign_data as sd
+import journal_handler as jh
 from datetime import datetime, timedelta
 
 
@@ -152,26 +153,26 @@ def reset_password():
 @app.route('/reset-password-redirect', methods=['POST', 'GET'])
 def reset_password_redirect():
     if request.method == 'POST':
-        data = request.get_json()
+        try:
+            data = request.get_json()
 
-        if not data or 'password' not in data or 'confirm_password' not in data:
-            return jsonify({'message': 'Please fill in all fields.'}), 400
+            password = data.get('password')
+            confirm_password = data.get('confirm_password')
 
-        password = data.get('password')
-        confirm_password = data.get('confirm_password')
-
-        if 'password_reset_user' in session:
-            if password == confirm_password:
-                if len(password) >= 10:
-                    uh.update_password(session['password_reset_user'], data.get('password'))
-                    session.pop('password_reset_user', None)
-                    return jsonify({'message': 'Password successfully updated.'}), 200
+            if 'password_reset_user' in session:
+                if password == confirm_password:
+                    if len(password) >= 10:
+                        uh.update_password(session['password_reset_user'], data.get('password'))
+                        session.pop('password_reset_user', None)
+                        return jsonify({'message': 'Password successfully updated.'}), 200
+                    else:
+                        return jsonify({'message': 'Password must be at least 10 characters long.'}), 400
                 else:
-                    return jsonify({'message': 'Password must be at least 10 characters long.'}), 400
+                    return jsonify({'message': 'Passwords do not match.'}), 400
             else:
-                return jsonify({'message': 'Passwords do not match.'}), 400
-        else:
-            return jsonify({'message': 'User session not found or expired.'}), 400
+                return jsonify({'message': 'User session not found or expired.'}), 400
+        except ValueError:
+            return jsonify({'message': 'Please fill in all fields.'}), 400
 
     return redirect(url_for("home"))
 
@@ -185,19 +186,44 @@ def profile():
         if len(str(data[3])) == 1:
             dob = str(data[2]) + '/0' + str(data[3]) + '/' + str(data[4])
         else:
-            dob = str(data[2]) + '/' + str(data[4]) + '/' + str(data[3])
+            dob = str(data[2]) + '/' + str(data[3]) + '/' + str(data[4])
         starsign_data = sd.get_starsign_info(data[5])
         return render_template("profile.html", username=data[0], email=data[1],
                                gender=data[6], dob=dob, starsign=data[5], s_desc=starsign_data, logged_in=logged_in())
     return redirect(url_for('home'))
 
+
 @app.route('/journal', methods=['GET', 'POST'])
 def journal():
-    return render_template('journal.html')
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            title = data.get('title')
+            mood = data.get('mood')
+            color = data.get('color')
+            content = data.get('content')
+            print(mood)
+            date = datetime.now().strftime('%m/%d/%Y')
+            if cv.journal_validate(title, mood, color, content) == 1:
+                return jsonify({'message': 'Invalid title length.'}), 400
+            if cv.journal_validate(title, mood, color, content) == 2:
+                return jsonify({'message': 'Please select a mood.'}), 400
+            if cv.journal_validate(title, mood, color, content) == 3:
+                return jsonify({'message': 'Please select a color.'}), 400
+            if cv.journal_validate(title, mood, color, content) == 4:
+                return jsonify({'message': 'Invalid content length.'}), 400
+            user_id = session['current_user_logged_in']
+            if jh.create_new_entry(user_id, title, mood, color, content, date):
+                return jsonify({'message': 'Successfully created entry.'}), 200
+            return jsonify({'message': 'An error occurred.'}), 400
 
+        except ValueError:
+            return jsonify({'message': 'Please fill in all fields.'}), 400
 
-
-
+    if logged_in():
+        entry_data = jh.fetch_entries_by_id(session['current_user_logged_in'])
+        return render_template('journal.html', logged_in=logged_in(), entry_data = entry_data)
+    return redirect(url_for('home'))
 
 
 @app.route('/logout')

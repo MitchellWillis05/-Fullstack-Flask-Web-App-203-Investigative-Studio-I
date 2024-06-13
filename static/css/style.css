@@ -614,6 +614,7 @@ main {
     border-radius: 5px;
     font-size: 14px;
     box-sizing: border-box;
+    resize:none;
 }
 
 .journal-form-group textarea {
@@ -640,11 +641,12 @@ main {
     background: none;
     color: #333;
     border-radius: 50px;
-    padding: 0;
+    padding: 0 2px;
 }
 
 .journal-mood-btn.selected, .journal-color-btn.selected {
-    border: 5px solid cornflowerblue;
+    border: 3px solid cornflowerblue;
+
 }
 
 .journal-color-selector {
@@ -661,7 +663,7 @@ main {
 }
 
 .journal-form-container .journal-btn {
-    background-color: #4CAF50;
+    background-color: #007bff;
     color: white;
     padding: 10px;
     border: none;

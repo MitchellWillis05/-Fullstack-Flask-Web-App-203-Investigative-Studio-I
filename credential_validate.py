@@ -79,6 +79,25 @@ def credential_validation(username, email, password, c_password, dob_year, dob_m
         return "An error occurred, please try again"
 
 
+def journal_validate(title, mood, color, content):
+    if len(title) == 0 or len(title) > 25:
+        print("Title Length Fail")
+        return 1
+    if mood != "happy" and mood != "sad" and mood != "angry" and mood != "scared" and mood != "tired":
+        print("Mood Check Fail")
+        return 2
+    if (color != "yellow" and color != "red" and color != "blue" and color != "orange" and color != "green" and color !=
+            "greenyellow" and color != "purple" and color != "pink" and color != "white" and color != "black"):
+        print("Color Check Fail")
+        return 3
+    if len(content) == 0 or len(content) > 300:
+        print("Content Length Fail")
+        return 4
+    else:
+        print("validate Pass")
+        return 5
+
+
 def get_star_sign(day, month):
     if (month == 1 and day >= 20) or (month == 2 and day <= 18):
         return "Aquarius"

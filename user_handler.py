@@ -75,8 +75,7 @@ def create_new_user(username, email, password, day, month, year, starsign, gende
         conn.commit()
         return True
     except sqlite3.Error as error:
-        print(error.sqlite_errorcode)
-        print(error.sqlite_errorname)
+        print(f"SQLite error: {error}")
         return False
     finally:
         cur.close()
@@ -105,7 +104,6 @@ def validate_login(email, password):
     try:
         cur.execute("SELECT password FROM user WHERE email = ?", (email.lower(),))
         password_fetched = cur.fetchall()
-        print(email, password_fetched)
         if ph.verify_password(password, password_fetched[0][0]):
             return True
         else:
