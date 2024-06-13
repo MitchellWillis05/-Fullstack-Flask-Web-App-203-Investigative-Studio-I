@@ -191,6 +191,14 @@ def profile():
                                gender=data[6], dob=dob, starsign=data[5], s_desc=starsign_data, logged_in=logged_in())
     return redirect(url_for('home'))
 
+@app.route('/journal', methods=['GET', 'POST'])
+def journal():
+    return render_template('journal.html')
+
+
+
+
+
 
 @app.route('/logout')
 def logout():

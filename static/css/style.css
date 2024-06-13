@@ -87,6 +87,7 @@ body {
     background: url('/static/images/pexels-wild-dog-dingo92-1470589.jpg') no-repeat;
     background-size: cover;
     background-position: center;
+    min-height: 100vh;
 }
 
 main {
@@ -504,4 +505,48 @@ main {
 .starsign-wrapper {
     width: 100%;
     padding: 10px 50px 10px 50px;
+}
+.journal-entry {
+    width: 100%;
+    padding: 20px;
+}
+
+.journal-entry .form-group {
+    margin-bottom: 20px;
+}
+
+.journal-entry .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.journal-entry .form-group input,
+.journal-entry .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.journal-entry .form-group textarea {
+    height: 100px;
+}
+
+.journal-entry button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+
+.journal-entry button:hover {
+    background: #0056b3;
 }
