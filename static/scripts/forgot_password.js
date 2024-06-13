@@ -1,11 +1,3 @@
-const validateEmail = (email) => {
-  return String(email)
-    .toLowerCase()
-    .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
-};
-
 const email_error = document.getElementById('email_popup_error')
 const code_error = document.getElementById('code_popup_error')
 
@@ -13,77 +5,72 @@ function showEmailPopup() {
       document.getElementById('popup-overlay').style.display = 'flex';
       document.getElementById('email-popup').style.display = 'block';
       document.getElementById('code-popup').style.display = 'none';
-    }
+}
 
-async function submitEmail(event) {
-    event.preventDefault();
+async function submit_email(){
+    const form = document.getElementById('email-form')
+    const formData = new FormData(form);
+    const error = document.getElementById('email_popup_error');
     const submitButton = document.getElementById('email-submit');
     const esubmit = document.getElementById('email-submit')
+    const email = document.getElementById('email-input')
     esubmit.innerText = "Sending"
     submitButton.disabled = true;
     submitButton.classList.add('loading');
     submitButton.classList.remove('popup-submit');
-    const email = document.getElementById('email-input').value;
-    if (email && validateEmail(email))
+
+    try
     {
-        try
-        {
-            const response = await fetch('/submit-email', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: email }),
+        const response = await fetch('/submit-email',
+            {
+                method: 'POST',
+                body: formData
             });
-            const result = await response.json();
+
             if (response.ok) {
-                email_error.innerText = '';
-                alert('Confirmation code successfully sent to ' + email);
+                const result = await response.json();
+		        email_error.innerText = '';
+                alert('Confirmation code successfully sent to ' + email.value);
                 document.getElementById('email-popup').style.display = 'none';
                 document.getElementById('code-popup').style.display = 'block';
             }
             else if (response.status === 429) {
+                const result = await response.json();
                 email_error.innerText = (result.message || 'Failed to submit email.')
                 startTimer(result.remaining_time);
             }
-            else
-            {
-                email_error.innerText = (result.message || 'Failed to submit email.')
+            else {
+                const result = await response.json();
+
+                error.innerText = result.message || 'Failed to login.';
             }
-        }
-        catch (error)
-        {
-            console.error('Error submitting email:', error);
-            email_error.innerText = ('Error, failed to submit email.')
-        }
+            esubmit.innerText = "Send"
+            submitButton.disabled = false;
+            submitButton.classList.remove('loading');
+            submitButton.classList.add('popup-submit');
     }
-    else if (email === '' || email == null)
+
+    catch (error)
     {
-        email_error.innerText = ('Please enter your email.')
+        console.error('Error submitting entry:', error);
+        error.innerText = 'An error occurred, please try again.';
     }
-    else if (!validateEmail(email))
-    {
-        email_error.innerText = ('Error, invalid email.')
-    }
-    esubmit.innerText = "Send"
-    submitButton.disabled = false;
-    submitButton.classList.remove('loading');
-    submitButton.classList.add('popup-submit');
 }
 
-async function submitCode(event) {
-  event.preventDefault();
+
+async function submitCode() {
+    const form = document.getElementById('code-form')
+    const formData = new FormData(form);
+    const error = document.getElementById('code_popup_error');
   const code = document.getElementById('code-input').value;
   if (code) {
 
       try {
           const response = await fetch('/submit-code', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({code: code}),
-          });
+                method: 'POST',
+                body: formData
+            });
+
           const result = await response.json();
           if (response.ok) {
               closePopup();
@@ -103,11 +90,11 @@ async function submitCode(event) {
   }
 }
 
-    function closePopup() {
-        document.getElementById('popup-overlay').style.display = 'none';
-        document.getElementById('email-input').value = '';
-        document.getElementById('code-input').value = '';
-    }
+function closePopup() {
+    document.getElementById('popup-overlay').style.display = 'none';
+    document.getElementById('email-input').value = '';
+    document.getElementById('code-input').value = '';
+}
 
 function stopPropagation(event) {
     event.stopPropagation();

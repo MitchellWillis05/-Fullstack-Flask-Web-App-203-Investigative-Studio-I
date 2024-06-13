@@ -7,20 +7,24 @@
                     <div class="popup-content" id="email-popup" onclick="stopPropagation(event)" >
                       <h2>Reset password</h2>
                         <p>Please enter your email</p>
-                      <form id="email-form" onsubmit="submitEmail(event)">
-                        <input type="text" id="email-input" autocomplete="off" placeholder="Email">
+
+                      <form id="email-form">
+                        <input type="text" id="email-input" name="email-input" autocomplete="off" placeholder="Email">
                           <div class="error" id="email_popup_error"></div>
                           <div id="timer"></div>
-                        <button class="popup-submit" id="email-submit" type="submit">Send</button>
+                        <button class="popup-submit" id="email-submit" type="button" onclick="submit_email()">Send</button>
                       </form>
+
                     </div>
                     <div class="popup-content" id="code-popup" style="display: none;" onclick="stopPropagation(event)">
                         <p>Please enter your confirmation code</p>
-                      <form id="code-form" onsubmit="submitCode(event)">
-                        <input class="code-input" type="text" id="code-input" autocomplete="off" placeholder="XXXXX">
+
+                      <form id="code-form">
+                        <input class="code-input" type="text" id="code-input" name="code-input" autocomplete="off" placeholder="XXXXX">
                           <div class="error" id="code_popup_error"></div>
-                        <button class="popup-submit" type="submit">Submit</button>
+                        <button class="popup-submit" type="button" onclick="submitCode()">Submit</button>
                       </form>
+
                     </div>
                 </div>
                 <script defer src="static/scripts/login_form_validation.js"></script>
