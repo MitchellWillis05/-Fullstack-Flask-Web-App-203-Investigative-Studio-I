@@ -84,7 +84,7 @@ header {
 
 /* main */
 body {
-    background: url('/static/images/pexels-wild-dog-dingo92-1470589.jpg') no-repeat;
+    background: url('/static/images/Lucid_Log_background.webp') no-repeat;
     background-size: cover;
     background-position: center;
     min-height: 100vh;
@@ -506,47 +506,184 @@ main {
     width: 100%;
     padding: 10px 50px 10px 50px;
 }
-.journal-entry {
-    width: 100%;
+
+/*JOURNAL PAGE + ENTRY */
+.journal-container {
+    width: 80%;
+    margin: 50px auto;
+    background-color: #fff;
+    border-radius: 10px;
     padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    color: #333;
+    overflow-y: auto;
+    max-height: 90vh;
 }
 
-.journal-entry .form-group {
+.journal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
 
-.journal-entry .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
+.journal-header h1 {
+    margin: 0;
+    color: #333;
 }
 
-.journal-entry .form-group input,
-.journal-entry .form-group textarea {
+.journal-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.journal-table thead {
+    background-color: #333;
+    color: #fff;
+}
+
+.journal-table th, .journal-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+
+}
+
+.journal-table tbody tr {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.journal-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.journal-add-entry-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.journal-add-entry-btn:hover {
+    background-color: #0056b3;
+}
+
+.journal-form-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 3px solid #f1f1f1;
+    z-index: 9;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+
+.journal-form-container {
+    max-width: 100%;
+}
+
+.journal-form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.journal-form-group {
+    margin-bottom: 20px;
+}
+
+.journal-form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.journal-form-group input[type="text"],
+.journal-form-group textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
+    box-sizing: border-box;
 }
 
-.journal-entry .form-group textarea {
+.journal-form-group textarea {
     height: 100px;
 }
 
-.journal-entry button {
-    display: block;
-    width: 100%;
+.journal-mood-selector {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.journal-mood-btn, .journal-color-btn {
+    border: none;
+    cursor: pointer;
     padding: 10px;
-    background: #007bff;
-    color: #fff;
+    border-radius: 5px;
+    margin: 5px 0;
+    font-size: 30px;
+}
+
+.journal-mood-btn {
+    background: none;
+    color: #333;
+    border-radius: 50px;
+    padding: 0;
+}
+
+.journal-mood-btn.selected, .journal-color-btn.selected {
+    border: 5px solid cornflowerblue;
+}
+
+.journal-color-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+}
+
+.journal-color-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.journal-form-container .journal-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
-    text-align: center;
+    width: 100%;
+    margin-bottom: 10px;
+    opacity: 0.9;
 }
 
-.journal-entry button:hover {
-    background: #0056b3;
+.journal-form-container .journal-btn:hover {
+    opacity: 1;
+}
+
+.journal-form-container .cancel {
+    background-color: red;
+}
+
+.top-right-curve {
+    border-radius: 10px 0 0 0;
+}
+
+.top-left-curve {
+    border-radius: 0 10px 0 0;
 }
