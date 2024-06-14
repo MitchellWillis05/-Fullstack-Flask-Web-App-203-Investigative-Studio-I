@@ -237,13 +237,14 @@ def entry(entryid):
     if request.method == 'POST':
         return jsonify({'message': 'Method not allowed.'}), 405
     elif request.method == 'GET':
-        if jh.fetch_entry_by_entryid(entryid) is not None:
-            selected_entry = jh.fetch_entry_by_entryid(entryid)
-            ai_prompt = generate_ai_analysis(selected_entry)
-            return render_template('journal-entry.html',
-                                   entry_data=selected_entry, ai_data=ai_prompt, logged_in=logged_in())
-        else:
-            return redirect(url_for('journal'))
+        if logged_in():
+            if jh.fetch_entry_by_entryid(entryid) is not None:
+                selected_entry = jh.fetch_entry_by_entryid(entryid)
+                if selected_entry[0] == session['current_user_logged_in']:
+                    ai_prompt = generate_ai_analysis(selected_entry)
+                    return render_template('journal-entry.html',
+                                           entry_data=selected_entry, ai_data=ai_prompt, logged_in=logged_in())
+        return redirect(url_for('journal'))
 
 
 @app.route('/logout')
