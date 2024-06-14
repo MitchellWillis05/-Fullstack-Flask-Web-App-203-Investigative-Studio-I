@@ -1,7 +1,7 @@
 # import libraries and other files
 import os
 from random import randint
-
+from openai import OpenAI
 import werkzeug.exceptions
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_mail import Mail, Message
@@ -18,10 +18,14 @@ app.config['SECRET_KEY'] = os.urandom(24)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'lucid.log.confirmations@gmail.com'
-app.config['MAIL_PASSWORD'] = 'xtqq jbky pnip cyud'
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
+
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY")
+)
 
 email_timeout_duration = 60 * 2
 
@@ -141,31 +145,21 @@ def submit_code():
                 return jsonify({'message': 'Incorrect Code.'}), 400
         except werkzeug.exceptions.BadRequest:
             return jsonify({'message': 'Please enter code.'}), 400
-    else:
+    elif request.method == 'GET':
         return redirect(url_for('home'))
 
 
 @app.route('/reset-password', methods=['GET', 'POST'])
 def reset_password():
-    if 'password_reset_user' in session:
-        return render_template('reset-password.html', logged_in=logged_in())
-    else:
-        return redirect(url_for('home'))
-
-
-@app.route('/reset-password-redirect', methods=['POST', 'GET'])
-def reset_password_redirect():
     if request.method == 'POST':
         try:
-            data = request.get_json()
-
-            password = data.get('password')
-            confirm_password = data.get('confirm_password')
+            password = request.form['password']
+            confirm_password = request.form['confirm_password']
 
             if 'password_reset_user' in session:
                 if password == confirm_password:
                     if len(password) >= 10:
-                        uh.update_password(session['password_reset_user'], data.get('password'))
+                        uh.update_password(session['password_reset_user'], password)
                         session.pop('password_reset_user', None)
                         return jsonify({'message': 'Password successfully updated.'}), 200
                     else:
@@ -176,8 +170,11 @@ def reset_password_redirect():
                 return jsonify({'message': 'User session not found or expired.'}), 400
         except ValueError:
             return jsonify({'message': 'Please fill in all fields.'}), 400
-
-    return redirect(url_for("home"))
+    elif request.method == 'GET':
+        if 'password_reset_user' in session:
+            return render_template('reset-password.html', logged_in=logged_in())
+        else:
+            return redirect(url_for('home'))
 
 
 @app.route('/profile')
@@ -224,9 +221,22 @@ def journal():
             return jsonify({'message': 'Please fill in all fields.'}), 400
 
     if logged_in():
-        entry_data = jh.fetch_entries_by_id(session['current_user_logged_in'])
+        entry_data = jh.fetch_entries_by_userid(session['current_user_logged_in'])
         return render_template('journal.html', logged_in=logged_in(), entry_data=jh.get_journal_preview(entry_data))
     return redirect(url_for('home'))
+
+
+@app.route('/entry/<entryid>', methods=['GET', 'POST'])
+def entry(entryid):
+    if request.method == 'POST':
+        return jsonify({'message': 'Method not allowed.'}), 405
+    elif request.method == 'GET':
+        if jh.fetch_entry_by_entryid(entryid) is not None:
+            selected_entry = jh.fetch_entry_by_entryid(entryid)
+            ai_prompt = generate_ai_analysis(selected_entry)
+            return render_template('journal-entry.html', entry_data=selected_entry, data=ai_prompt, logged_in=logged_in())
+        else:
+            return redirect(url_for('journal'))
 
 
 @app.route('/logout')
@@ -249,6 +259,37 @@ def send_confirmation_code(email):
     session['confirmation_code'] = str(randint(10000, 99999))
     msg.body = "Your email confirmation code is: " + session['confirmation_code']
     mail.send(msg)
+
+
+def generate_ai_analysis(selected_entry):
+    if 'current_user_logged_in' in session:
+        title = selected_entry[1]
+        mood = selected_entry[2]
+        color = selected_entry[3]
+        content = selected_entry[4]
+        starsign = uh.fetch_prompt_info_by_userid(session['current_user_logged_in'])[0]
+        gender = uh.fetch_prompt_info_by_userid(session['current_user_logged_in'])[1]
+        prompt = ("generate an analysis/explanation for my dream, "
+                  "the title of my dream is: " + title
+                  + ". The emotion I felt most in my dream was: " + mood
+                  + ". The color I associate my dream with is: " + color
+                  + ". This is what happened in my dream: " + content
+                  + ". My starsign is: " + starsign
+                  + ". And my gender is: " + gender
+                  + ". Please generate an analysis/explanation for my dream taking this information into account. "
+                    "Only use the starsign and/or gender if it is relevant"
+                    " MAX 300 CHARACTERS."
+                  )
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            model="gpt-3.5-turbo",
+        )
+        return chat_completion.choices[0].message.content
 
 
 # run the app

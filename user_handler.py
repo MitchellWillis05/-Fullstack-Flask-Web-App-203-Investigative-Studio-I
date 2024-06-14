@@ -87,7 +87,7 @@ def update_password(user_id, new_password):
     cur = conn.cursor()
     try:
         new_password = ph.encrypt_password(new_password)
-        cur.execute("UPDATE user SET password = ? WHERE userid = ?", (new_password, user_id[0][0]))
+        cur.execute("UPDATE user SET password = ? WHERE userid = ?", (new_password, user_id))
         conn.commit()
         return True
     except sqlite3.Error as error:
@@ -136,6 +136,24 @@ def fetch_user_by_email(email):
         cur.close()
         conn.close()
 
+
+def fetch_prompt_info_by_userid(userid):
+    conn = db_connect()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT starsign, gender FROM user WHERE userid = ?", (userid,))
+        data_fetched = cur.fetchall()
+        return data_fetched[0]
+    except sqlite3.Error as error:
+        print(f"SQLite error: {error}")
+        return None
+
+    except IndexError as error:
+        print(error)
+        return None
+    finally:
+        cur.close()
+        conn.close()
 
 def fetch_cred_by_id(userid):
     conn = db_connect()

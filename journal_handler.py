@@ -31,7 +31,26 @@ def create_new_entry(userid, title, mood, color, content, date):
         conn.close()
 
 
-def fetch_entries_by_id(userid):
+def fetch_entry_by_entryid(entryid):
+    conn = db_connect()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT userid, title, mood, color, content, date FROM journal WHERE entryid = ?",
+                    (entryid,))
+        data_fetched = cur.fetchall()
+        return data_fetched[0]
+    except sqlite3.Error as error:
+        print(f"SQLite error: {error}")
+        return None
+    except IndexError as error:
+        print(error)
+        return None
+    finally:
+        cur.close()
+        conn.close()
+
+
+def fetch_entries_by_userid(userid):
     conn = db_connect()
     cur = conn.cursor()
     try:
@@ -63,7 +82,6 @@ def get_journal_preview(data):
     for row in data:
         row_list = list(row)
         row_list[5] = truncate_string(row_list[5], 35)
-        print(row_list[5])
         modified_row = tuple(row_list)
         modified_data.append(modified_row)
 
