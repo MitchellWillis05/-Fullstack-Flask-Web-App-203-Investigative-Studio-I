@@ -14,20 +14,6 @@ from datetime import datetime, timedelta
 
 load_dotenv()
 
-# Debugging statement to print the current working directory
-print("Current working directory:", os.getcwd())
-
-# Debugging statement to print the contents of the .env file
-with open('.env', 'r') as file:
-    print("Contents of .env file:")
-    print(file.read())
-
-# Debugging statement to print all environment variables
-print("Environment variables:")
-for key, value in os.environ.items():
-    print(f"{key}: {value}")
-
-
 # define app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
