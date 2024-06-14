@@ -1,4 +1,5 @@
 # import libraries and other files
+from dotenv import load_dotenv
 import os
 from random import randint
 from openai import OpenAI
@@ -11,6 +12,7 @@ import starsign_data as sd
 import journal_handler as jh
 from datetime import datetime, timedelta
 
+load_dotenv()
 
 # define app
 app = Flask(__name__)
@@ -23,9 +25,12 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
-client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY")
-)
+api_key = os.getenv("OPENAI_API_KEY")
+
+if api_key is None:
+    raise ValueError("OPENAI_API_KEY environment variable not set")
+else:
+    client = OpenAI(api_key=api_key)
 
 email_timeout_duration = 60 * 2
 
