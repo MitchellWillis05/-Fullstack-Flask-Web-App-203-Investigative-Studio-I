@@ -30,29 +30,16 @@ function selectColor(button, color)
     document.getElementById('color').value = color;
 }
 
-async function submit_entry(event){
-    event.preventDefault();
-
-    const title = document.getElementById('title');
-    const mood = document.getElementById('mood');
-    const color = document.getElementById('color');
-    const content = document.getElementById('content');
+async function submit_entry(){
+    const form = document.getElementById('entry-form')
+    const formData = new FormData(form);
     const error = document.getElementById('error');
-    error.innerText = '';
 
     try
     {
         const response = await fetch('/journal', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    title: title.value,
-                    mood: mood.value,
-                    color : color.value,
-                    content : content.value
-                }),
+                body: formData
             });
 
             if (response.ok) {

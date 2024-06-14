@@ -40,10 +40,13 @@ def not_found_error(error):
     return render_template('404.html'), 404
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    session.pop('password_reset_user', None)
-    return render_template('home.html', logged_in=logged_in())
+    if request.method == 'POST':
+        return jsonify({'message': 'Method not allowed.'}), 405
+    elif request.method == 'GET':
+        session.pop('password_reset_user', None)
+        return render_template('home.html', logged_in=logged_in())
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -202,12 +205,10 @@ def profile():
 def journal():
     if request.method == 'POST':
         try:
-            data = request.get_json()
-            title = data.get('title')
-            mood = data.get('mood')
-            color = data.get('color')
-            content = data.get('content')
-            print(mood)
+            title = request.form['title']
+            mood = request.form['mood']
+            color = request.form['color']
+            content = request.form['content']
             date = datetime.now().strftime('%m/%d/%Y')
             if cv.journal_validate(title, mood, color, content) == 1:
                 return jsonify({'message': 'Invalid title length.'}), 400
@@ -239,7 +240,8 @@ def entry(entryid):
         if jh.fetch_entry_by_entryid(entryid) is not None:
             selected_entry = jh.fetch_entry_by_entryid(entryid)
             ai_prompt = generate_ai_analysis(selected_entry)
-            return render_template('journal-entry.html', entry_data=selected_entry, data=ai_prompt, logged_in=logged_in())
+            return render_template('journal-entry.html',
+                                   entry_data=selected_entry, ai_data=ai_prompt, logged_in=logged_in())
         else:
             return redirect(url_for('journal'))
 

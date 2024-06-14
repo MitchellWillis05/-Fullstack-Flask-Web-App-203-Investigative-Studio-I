@@ -1,7 +1,38 @@
 {% extends "base.html" %}
-        {% block content %}
-            <main>
-                <p>this is the entry page</p>
-                <p>{{ data }}</p>
-            </main>
-        {%endblock%}
+{% block content %}
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="info">
+                <p><strong>Title</strong></p>
+                <p>{{ entry_data[1] }}</p>
+                <p><strong>Mood</strong></p>
+                <p>{{ entry_data[2] }}</p>
+                <p><strong>Color</strong></p>
+                <p>{{ entry_data[3] }}</p>
+                <p><strong>Date</strong></p>
+                <p>{{ entry_data[5] }}</p>
+                <p><a href="#" class="delete">Delete</a></p>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="entry-right">
+                <div class="container-top">
+                    <div class="entry-content">
+                        <p style="font-size: 20px">{{ entry_data[4] }}</p>
+                    </div>
+                </div>
+                <div style="text-align: center">
+                    <button class="journal-add-entry-btn">Generate Response <i class='bx bxs-star'></i></button>
+                </div>
+                <div class="container-bottom">
+                    <div class="entry-content">
+                        <p style="font-size: 20px">{{ ai_data }}</p>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}
