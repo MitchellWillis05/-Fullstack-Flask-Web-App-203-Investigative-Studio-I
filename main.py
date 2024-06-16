@@ -12,7 +12,7 @@ import starsign_data as sd
 import journal_handler as jh
 from datetime import datetime, timedelta
 
-#load_dotenv()
+load_dotenv()
 
 # define app
 app = Flask(__name__)
@@ -20,17 +20,17 @@ app.config['SECRET_KEY'] = os.urandom(24)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'lucid.log.confirmations@gmail.com'
-#app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
 
-#api_key = os.getenv("OPENAI_API_KEY")
-#if api_key is None:
-#    raise ValueError("OPENAI_API_KEY environment variable not set")
-#else:
-#    client = OpenAI(api_key=api_key)
+api_key = os.getenv("OPENAI_API_KEY")
+if api_key is None:
+    raise ValueError("OPENAI_API_KEY environment variable not set")
+else:
+    client = OpenAI(api_key=api_key)
 
 email_timeout_duration = 60 * 2
 
