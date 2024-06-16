@@ -43,7 +43,6 @@ async function submit_entry(){
             });
 
             if (response.ok) {
-                const result = await response.json();
                 window.location.href = '/journal';
             } else {
                 const result = await response.json();

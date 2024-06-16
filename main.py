@@ -12,7 +12,7 @@ import starsign_data as sd
 import journal_handler as jh
 from datetime import datetime, timedelta
 
-load_dotenv()
+#load_dotenv()
 
 # define app
 app = Flask(__name__)
@@ -20,17 +20,17 @@ app.config['SECRET_KEY'] = os.urandom(24)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'lucid.log.confirmations@gmail.com'
-app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+#app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
-api_key = os.getenv("OPENAI_API_KEY")
-print(api_key)
-if api_key is None:
-    raise ValueError("OPENAI_API_KEY environment variable not set")
-else:
-    client = OpenAI(api_key=api_key)
+
+#api_key = os.getenv("OPENAI_API_KEY")
+#if api_key is None:
+#    raise ValueError("OPENAI_API_KEY environment variable not set")
+#else:
+#    client = OpenAI(api_key=api_key)
 
 email_timeout_duration = 60 * 2
 
@@ -176,6 +176,8 @@ def reset_password():
                     return jsonify({'message': 'Passwords do not match.'}), 400
             else:
                 return jsonify({'message': 'User session not found or expired.'}), 400
+        except werkzeug.exceptions.BadRequest:
+            return jsonify({'message': 'Please fill in all fields.'}), 400
         except ValueError:
             return jsonify({'message': 'Please fill in all fields.'}), 400
     elif request.method == 'GET':
@@ -222,7 +224,8 @@ def journal():
             if jh.create_new_entry(user_id, title, mood, color, content, date):
                 return jsonify({'message': 'Successfully created entry.'}), 200
             return jsonify({'message': 'An error occurred.'}), 400
-
+        except werkzeug.exceptions.BadRequest:
+            return jsonify({'message': 'Please fill in all fields.'}), 400
         except ValueError:
             return jsonify({'message': 'Please fill in all fields.'}), 400
 
@@ -235,16 +238,28 @@ def journal():
 @app.route('/entry/<entryid>', methods=['GET', 'POST'])
 def entry(entryid):
     if request.method == 'POST':
-        return jsonify({'message': 'Method not allowed.'}), 405
-    elif request.method == 'GET':
         if logged_in():
             if jh.fetch_entry_by_entryid(entryid) is not None:
                 selected_entry = jh.fetch_entry_by_entryid(entryid)
                 if selected_entry[0] == session['current_user_logged_in']:
                     ai_prompt = generate_ai_analysis(selected_entry)
+                    if ai_prompt is not None:
+                        uh.new_request(selected_entry[0])
+                        return jsonify({'message': ai_prompt}), 200
+                    else:
+                        return jsonify({'message': "Please wait before generating another response."}), 400
+        return jsonify({'message': 'You do not have access to this entry.'}), 400
+    elif request.method == 'GET':
+        if logged_in():
+            if jh.fetch_entry_by_entryid(entryid) is not None:
+                selected_entry = jh.fetch_entry_by_entryid(entryid)
+                if selected_entry[0] == session['current_user_logged_in']:
                     return render_template('journal-entry.html',
-                                           entry_data=selected_entry, ai_data=ai_prompt, logged_in=logged_in())
+                                           entry_data=selected_entry, logged_in=logged_in(), entryid=entryid)
         return redirect(url_for('journal'))
+
+
+
 
 
 @app.route('/logout')
@@ -271,6 +286,21 @@ def send_confirmation_code(email):
 
 def generate_ai_analysis(selected_entry):
     if 'current_user_logged_in' in session:
+        if uh.fetch_last_request(session['current_user_logged_in']):
+            last_request_time = datetime.strptime(uh.fetch_last_request(session['current_user_logged_in']), "%H:%M:%S")
+
+            current_time = datetime.now().strftime("%H:%M:%S")
+
+            current_time = datetime.strptime(current_time, "%H:%M:%S")
+
+            time_difference = current_time - last_request_time
+
+            if time_difference > timedelta(minutes=5):
+                pass
+            else:
+                return None
+        else:
+            pass
         title = selected_entry[1]
         mood = selected_entry[2]
         color = selected_entry[3]

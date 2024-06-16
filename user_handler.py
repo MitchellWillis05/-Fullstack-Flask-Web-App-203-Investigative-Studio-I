@@ -1,6 +1,7 @@
 # import sqlite3 for database interaction
 import sqlite3
 import password_handler as ph
+from datetime import datetime, timedelta
 
 
 # database connection method
@@ -69,8 +70,8 @@ def create_new_user(username, email, password, day, month, year, starsign, gende
     cur = conn.cursor()
     try:
         cur.execute(
-            "INSERT INTO user (username, email, password, dob_day, dob_month, dob_year, starsign, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            (username, email.lower(), password, int(day), int(month), int(year), starsign, gender)
+            "INSERT INTO user (username, email, password, dob_day, dob_month, dob_year, starsign, gender, last_request) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (username, email.lower(), password, int(day), int(month), int(year), starsign, gender, datetime.now().strftime("%H:%M:%S"))
         )
         conn.commit()
         return True
@@ -112,6 +113,7 @@ def validate_login(email, password):
         print(f"SQLite error: {error}")
         return False
     except IndexError as error:
+        print("error validating login")
         print(error)
         return False
     finally:
@@ -130,6 +132,7 @@ def fetch_user_by_email(email):
         print(f"SQLite error: {error}")
         return None
     except IndexError as error:
+        print("error fetching user by email")
         print(error)
         return None
     finally:
@@ -149,11 +152,33 @@ def fetch_prompt_info_by_userid(userid):
         return None
 
     except IndexError as error:
+        print("error fetching prompt info")
         print(error)
         return None
     finally:
         cur.close()
         conn.close()
+
+
+def fetch_last_request(userid):
+    conn = db_connect()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT last_request FROM user WHERE userid = ?", (userid,))
+        data_fetched = cur.fetchall()
+        return data_fetched[0][0]
+    except sqlite3.Error as error:
+        print(f"SQLite error: {error}")
+        return None
+
+    except IndexError as error:
+        print("error fetching last request")
+        print(error)
+        return None
+    finally:
+        cur.close()
+        conn.close()
+
 
 def fetch_cred_by_id(userid):
     conn = db_connect()
@@ -170,8 +195,24 @@ def fetch_cred_by_id(userid):
         return None
 
     except IndexError as error:
+        print("error fetching credentials by id")
         print(error)
         return None
+    finally:
+        cur.close()
+        conn.close()
+
+
+def new_request(userid):
+    conn = db_connect()
+    cur = conn.cursor()
+    try:
+        cur.execute("UPDATE user SET last_request = ? WHERE userid = ?", (datetime.now().strftime("%H:%M:%S"), userid))
+        conn.commit()
+        return True
+    except sqlite3.Error as error:
+        print(f"SQLite error: {error}")
+        return False
     finally:
         cur.close()
         conn.close()

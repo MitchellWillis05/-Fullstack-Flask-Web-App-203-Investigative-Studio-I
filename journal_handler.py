@@ -1,6 +1,5 @@
 # import sqlite3 for database interaction
 import sqlite3
-import password_handler as ph
 
 
 # database connection method
@@ -43,6 +42,7 @@ def fetch_entry_by_entryid(entryid):
         print(f"SQLite error: {error}")
         return None
     except IndexError as error:
+        print("error fetching entry by entry id")
         print(error)
         return None
     finally:
