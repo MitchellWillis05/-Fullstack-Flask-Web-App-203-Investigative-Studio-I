@@ -258,7 +258,23 @@ def entry(entryid):
                                            entry_data=selected_entry, logged_in=logged_in(), entryid=entryid)
         return redirect(url_for('journal'))
 
-
+@app.route('/delete-entry', methods=['GET', 'POST'])
+def delete_entry():
+    if request.method == 'POST':
+        try:
+            entryid = request.form['entry_id']
+        except werkzeug.exceptions.BadRequest:
+            return jsonify({'message': 'No entry selected.'}), 400
+        if logged_in():
+            if jh.fetch_entry_by_entryid(entryid) is not None:
+                selected_entry = jh.fetch_entry_by_entryid(entryid)
+                if selected_entry[0] == session['current_user_logged_in']:
+                    if jh.delete_entry_by_entryid(entryid):
+                        return jsonify({'message': 'Deleted entry.'}), 200
+                    return jsonify({'message': 'There was an error deleting the entry.'}), 400
+        return jsonify({'message': 'You do not have access to this entry.'}), 400
+    elif request.method == 'GET':
+        return redirect(url_for('journal'))
 
 
 

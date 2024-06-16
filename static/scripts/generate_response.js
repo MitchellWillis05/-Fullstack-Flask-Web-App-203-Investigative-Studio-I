@@ -1,4 +1,26 @@
+async function delete_entry() {
+    const form = document.getElementById('entry_id_form')
+    const formData = new FormData(form);
+    const error = document.getElementById('error');
 
+    try {
+        const response = await fetch('/delete-entry', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            error.innerText = "";
+            window.location.href = '/journal';
+        } else {
+            const result = await response.json();
+            error.innerText = result.message || 'Failed to delete entry.';
+        }
+    } catch (error) {
+        console.error('Error deleting entry:', error);
+        error.innerText = 'An error occurred, please try again.';
+    }
+}
 
 
 async function generate_response() {

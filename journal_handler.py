@@ -69,6 +69,23 @@ def fetch_entries_by_userid(userid):
         cur.close()
         conn.close()
 
+def delete_entry_by_entryid(entryid):
+    conn = db_connect()
+    cur = conn.cursor()
+    try:
+        cur.execute("DELETE FROM journal WHERE entryid = ?", (entryid,))
+        conn.commit()
+        return True
+    except sqlite3.Error as error:
+        print(f"SQLite error: {error}")
+        return False
+
+    except IndexError as error:
+        print(error)
+        return False
+    finally:
+        cur.close()
+        conn.close()
 
 def truncate_string(s, length):
     if len(s) > length:
