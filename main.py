@@ -229,10 +229,11 @@ def journal():
         except ValueError:
             return jsonify({'message': 'Please fill in all fields.'}), 400
 
-    if logged_in():
-        entry_data = jh.fetch_entries_by_userid(session['current_user_logged_in'])
-        return render_template('journal.html', logged_in=logged_in(), entry_data=jh.get_journal_preview(entry_data))
-    return redirect(url_for('home'))
+    elif request.method == 'GET':
+        if logged_in():
+            entry_data = jh.fetch_entries_by_userid(session['current_user_logged_in'])
+            return render_template('journal.html', logged_in=logged_in(), entry_data=jh.get_journal_preview(entry_data))
+        return redirect(url_for('login'))
 
 
 @app.route('/entry/<entryid>', methods=['GET', 'POST'])

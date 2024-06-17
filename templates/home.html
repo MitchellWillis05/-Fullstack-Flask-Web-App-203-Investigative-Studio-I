@@ -1,6 +1,11 @@
 {% extends "base.html" %}
         {% block content %}
             <main>
-                <p>this is the home page</p>
+                <script defer src="/static/scripts/home.js"></script>
+                <div style="width: 100%; min-height: 70vh; text-align: center;">
+                    <h1 style="font-size: 50px; color: #ffffff">Welcome to Lucid Log!</h1>
+                    <button onclick="start()" style="margin: 50px; padding: 10px 20px 10px 20px; border: none; border-radius: 20px; background-color: #007bff; cursor: pointer; font-size: 30px;" >Start Dreaming</button>
+                </div>
+
             </main>
         {%endblock%}
