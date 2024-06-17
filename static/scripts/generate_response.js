@@ -27,7 +27,7 @@ async function generate_response() {
     const id = document.getElementById('entry_id');
     const error = document.getElementById('error');
     const ai_response = document.getElementById('ai_response');
-
+    error.innerText = "";
     try {
         const response = await fetch('/entry/' + id.value, {
             method: 'POST'

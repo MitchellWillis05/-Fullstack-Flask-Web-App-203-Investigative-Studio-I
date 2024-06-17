@@ -26,7 +26,7 @@ app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
 
-api_key = os.getenv("OPENAI_API_KEY")
+api_key = 'sk-proj-HG3woJoOVw9aW78LdM8DT3BlbkFJ3VJOpmz6Z9A1w7PNBRvY'
 if api_key is None:
     raise ValueError("OPENAI_API_KEY environment variable not set")
 else:
@@ -259,6 +259,7 @@ def entry(entryid):
                                            entry_data=selected_entry, logged_in=logged_in(), entryid=entryid)
         return redirect(url_for('journal'))
 
+
 @app.route('/delete-entry', methods=['GET', 'POST'])
 def delete_entry():
     if request.method == 'POST':
@@ -276,7 +277,6 @@ def delete_entry():
         return jsonify({'message': 'You do not have access to this entry.'}), 400
     elif request.method == 'GET':
         return redirect(url_for('journal'))
-
 
 
 @app.route('/logout')
@@ -303,21 +303,26 @@ def send_confirmation_code(email):
 
 def generate_ai_analysis(selected_entry):
     if 'current_user_logged_in' in session:
-        if uh.fetch_last_request(session['current_user_logged_in']):
-            last_request_time = datetime.strptime(uh.fetch_last_request(session['current_user_logged_in']), "%H:%M:%S")
+        last_request_time_str = uh.fetch_last_request(session['current_user_logged_in'])
+        if last_request_time_str:
+            # Parse the last request time from the database
+            last_request_time = datetime.strptime(last_request_time_str, "%Y-%m-%d %H:%M:%S")
 
-            current_time = datetime.now().strftime("%H:%M:%S")
+            # Get current time with date
+            current_time = datetime.now()
 
-            current_time = datetime.strptime(current_time, "%H:%M:%S")
-
+            # Calculate time difference
             time_difference = current_time - last_request_time
 
             if time_difference > timedelta(minutes=5):
+                # Perform necessary actions if the time difference is greater than 5 minutes
                 pass
             else:
+                print(current_time, last_request_time)
                 return None
         else:
             pass
+
         title = selected_entry[1]
         mood = selected_entry[2]
         color = selected_entry[3]
@@ -345,6 +350,7 @@ def generate_ai_analysis(selected_entry):
             model="gpt-3.5-turbo",
         )
         return chat_completion.choices[0].message.content
+    return None
 
 
 # run the app

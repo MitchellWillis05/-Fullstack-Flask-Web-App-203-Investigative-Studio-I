@@ -71,7 +71,7 @@ def create_new_user(username, email, password, day, month, year, starsign, gende
     try:
         cur.execute(
             "INSERT INTO user (username, email, password, dob_day, dob_month, dob_year, starsign, gender, last_request) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            (username, email.lower(), password, int(day), int(month), int(year), starsign, gender, datetime.now().strftime("%H:%M:%S"))
+            (username, email.lower(), password, int(day), int(month), int(year), starsign, gender, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
         conn.commit()
         return True
@@ -207,7 +207,8 @@ def new_request(userid):
     conn = db_connect()
     cur = conn.cursor()
     try:
-        cur.execute("UPDATE user SET last_request = ? WHERE userid = ?", (datetime.now().strftime("%H:%M:%S"), userid))
+        cur.execute("UPDATE user SET last_request = ? WHERE userid = ?",
+                    (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), userid))
         conn.commit()
         return True
     except sqlite3.Error as error:

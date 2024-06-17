@@ -14,7 +14,7 @@ async function submit_entry(){
 
             if (response.ok) {
                 const result = await response.json();
-                window.location.href = '/';
+                window.location.href = '/login';
             } else {
                 const result = await response.json();
 

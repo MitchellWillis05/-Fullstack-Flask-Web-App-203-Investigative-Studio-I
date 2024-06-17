@@ -16,11 +16,11 @@ def create_new_entry(userid, title, mood, color, content, date):
     conn = db_connect()
     cur = conn.cursor()
     try:
-        cur.execute(
-            "INSERT INTO journal (userid, title, mood, color, content, date) VALUES (?, ?, ?, ?, ?, ?)",
-            (userid, title, mood, color, content, date)
-        )
+        cur.execute("INSERT INTO journal (userid, title, mood, color, content, date) VALUES (?, ?, ?, ?, ?, ?)",
+                    (userid, title, mood, color, content, date)
+                    )
         conn.commit()
+        print('done')
         return True
     except sqlite3.Error as error:
         print(f"SQLite error: {error}")
@@ -69,6 +69,7 @@ def fetch_entries_by_userid(userid):
         cur.close()
         conn.close()
 
+
 def delete_entry_by_entryid(entryid):
     conn = db_connect()
     cur = conn.cursor()
@@ -86,6 +87,7 @@ def delete_entry_by_entryid(entryid):
     finally:
         cur.close()
         conn.close()
+
 
 def truncate_string(s, length):
     if len(s) > length:
