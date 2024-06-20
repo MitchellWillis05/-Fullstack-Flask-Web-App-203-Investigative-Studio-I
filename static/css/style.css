@@ -350,6 +350,7 @@ main {
     border: none;
     background: rgba(0,70,100,1);
     color: white;
+    cursor: wait;
 }
 
 /* Profile Page */
@@ -569,6 +570,17 @@ main {
     border-radius: 5px;
     padding: 10px 20px;
     cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.journal-add-entry-btn-loading {
+    background-color: #142fff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: wait;
     font-size: 16px;
     transition: background-color 0.3s ease;
 }

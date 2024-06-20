@@ -27,7 +27,11 @@ async function generate_response() {
     const id = document.getElementById('entry_id');
     const error = document.getElementById('error');
     const ai_response = document.getElementById('ai_response');
+    const submitButton = document.getElementById('generate-button');
     error.innerText = "";
+    submitButton.disabled = true;
+    submitButton.classList.add('journal-add-entry-btn-loading');
+    submitButton.classList.remove('journal-add-entry-btn');
     try {
         const response = await fetch('/entry/' + id.value, {
             method: 'POST'
@@ -45,6 +49,9 @@ async function generate_response() {
         console.error('Error generating response:', error);
         error.innerText = 'An error occurred, please try again.';
     }
+    submitButton.disabled = false;
+    submitButton.classList.remove('journal-add-entry-btn-loading');
+    submitButton.classList.add('journal-add-entry-btn');
 }
 
 function displayTextOneLetterAtATime(text, element) {
