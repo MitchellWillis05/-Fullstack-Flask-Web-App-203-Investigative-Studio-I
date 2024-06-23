@@ -7,6 +7,7 @@ import werkzeug.exceptions
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_mail import Mail, Message
 import user_handler as uh
+import password_handler as ph
 import credential_validate as cv
 import starsign_data as sd
 import journal_handler as jh
@@ -77,23 +78,17 @@ def login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     session.pop('password_reset_user', None)
+
     if request.method == 'POST':
         try:
-            username = request.form['username']
-            email = request.form['email']
-            password = request.form['password']
-            confirm_password = request.form['confirm_password']
-            dob_day = request.form['dob_day']
-            dob_month = request.form['dob_month']
-            dob_year = request.form['dob_year']
-            gender = request.form['gender']
-            validation = cv.credential_validation(username, email,
-                                                  password, confirm_password,
-                                                  dob_year, dob_month, dob_day, gender)
-
-            if len(validation) > 0:
-                return jsonify({'message': validation}), 400
+            if 'signup_user_verified' not in session:
+                return jsonify({'message': "There was an error creating your account."}), 400
             else:
+                encrypted_password = ph.encrypt_password(request.form['password'])
+                uh.create_new_user(request.form['username'], request.form['email'], encrypted_password,
+                                   request.form['dob_day'], request.form['dob_month'], request.form['dob_year'],
+                                   cv.get_star_sign(int(request.form['dob_day']), int(request.form['dob_month'])),
+                                   request.form['selected_gender'])
                 return jsonify({'message': 'Signup Successful.'}), 200
         except werkzeug.exceptions.BadRequest:
             return jsonify({'message': 'Please fill in all fields.'}), 400
@@ -101,14 +96,16 @@ def signup():
             return jsonify({'message': 'Please fill in all fields.'}), 400
 
     elif request.method == 'GET':
+        session.pop('signup_user_validated', None)
+        session.pop('signup_user_verified', None)
         if logged_in():
             return redirect(url_for('home'))
         else:
             return render_template('signup.html', logged_in=logged_in())
 
 
-@app.route('/submit-email', methods=['GET', 'POST'])
-def submit_email():
+@app.route('/submit-forgot-email', methods=['GET', 'POST'])
+def submit_forgot_email():
     session.pop('password_reset_user', None)
     if request.method == 'POST':
         try:
@@ -127,6 +124,8 @@ def submit_email():
                                           current_time).seconds
                         return jsonify({'message': 'Please wait before sending another confirmation email.',
                                         'remaining_time': remaining_time}), 429
+                    else:
+                        pass
 
                 session['last_request_time'] = str(current_time)
                 send_confirmation_code(email)
@@ -141,6 +140,44 @@ def submit_email():
         return redirect(url_for('home'))
 
 
+@app.route('/submit-signup-email', methods=['GET', 'POST'])
+def submit_signup_email():
+    session.pop('password_reset_user', None)
+    if request.method == 'POST':
+        try:
+            email = request.form['email']
+            validation = cv.credential_validation(request.form['username'], email,
+                                                  request.form['password'], request.form['confirm_password'],
+                                                  request.form['dob_year'], request.form['dob_month'],
+                                                  request.form['dob_day'], request.form['selected_gender'])
+            print(validation)
+            if validation is not None:
+                return jsonify({'message': validation}), 400
+            last_request_time = session.get('last_request_time')
+            current_time = datetime.now()
+            if last_request_time:
+                last_request_time = datetime.strptime(last_request_time, '%Y-%m-%d %H:%M:%S.%f')
+                if current_time < last_request_time + timedelta(seconds=email_timeout_duration):
+                    remaining_time = (last_request_time +
+                                      timedelta(seconds=email_timeout_duration) -
+                                      current_time).seconds
+                    print("WAIT")
+                    return jsonify({'message': 'Please wait before sending another confirmation email.',
+                                    'remaining_time': remaining_time}), 429
+                else:
+                    pass
+
+            session['last_request_time'] = str(current_time)
+            send_confirmation_code(email)
+            session['signup_user_validated'] = True
+            return jsonify({'message': 'Success.'}), 200
+
+        except werkzeug.exceptions.BadRequest:
+            return jsonify({'message': 'Please fill all fields.'}), 400
+    else:
+        return redirect(url_for('home'))
+
+
 @app.route('/submit-code', methods=['POST', 'GET'])
 def submit_code():
     if request.method == 'POST':
@@ -148,6 +185,9 @@ def submit_code():
             code = request.form['code-input']
             if code == session['confirmation_code']:
                 session.pop('confirmation_code', None)
+                if 'signup_user_validated' in session:
+                    session.pop('signup_user_validated', None)
+                    session['signup_user_verified'] = True
                 return jsonify({'message': 'Code submitted successfully.'}), 200
             else:
                 return jsonify({'message': 'Incorrect Code.'}), 400

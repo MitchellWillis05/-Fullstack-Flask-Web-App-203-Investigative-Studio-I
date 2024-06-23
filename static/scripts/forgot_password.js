@@ -11,17 +11,17 @@ async function submit_email(){
     const form = document.getElementById('email-form')
     const formData = new FormData(form);
     const error = document.getElementById('email_popup_error');
-    const submitButton = document.getElementById('email-submit');
-    const esubmit = document.getElementById('email-submit')
     const email = document.getElementById('email-input')
-    esubmit.innerText = "Sending"
+    const submitButton = document.getElementById('email-submit');
+
+    submitButton.innerText = "Sending"
     submitButton.disabled = true;
     submitButton.classList.add('loading');
     submitButton.classList.remove('popup-submit');
 
     try
     {
-        const response = await fetch('/submit-email',
+        const response = await fetch('/submit-forgot-email',
             {
                 method: 'POST',
                 body: formData
@@ -44,10 +44,7 @@ async function submit_email(){
 
                 error.innerText = result.message || 'Failed to login.';
             }
-            esubmit.innerText = "Send"
-            submitButton.disabled = false;
-            submitButton.classList.remove('loading');
-            submitButton.classList.add('popup-submit');
+
     }
 
     catch (error)
@@ -55,6 +52,10 @@ async function submit_email(){
         console.error('Error submitting entry:', error);
         error.innerText = 'An error occurred, please try again.';
     }
+    submitButton.innerText = "Send"
+    submitButton.disabled = false;
+    submitButton.classList.remove('loading');
+    submitButton.classList.add('popup-submit');
 }
 
 
@@ -62,8 +63,13 @@ async function submitCode() {
     const form = document.getElementById('code-form')
     const formData = new FormData(form);
     const error = document.getElementById('code_popup_error');
-  const code = document.getElementById('code-input').value;
-  if (code) {
+    const submitButton = document.getElementById('code-submit');
+    submitButton.innerText = "Sending"
+    submitButton.disabled = true;
+    submitButton.classList.add('loading');
+    submitButton.classList.remove('popup-submit');
+    const code = document.getElementById('code-input').value;
+    if (code) {
 
       try {
           const response = await fetch('/submit-code', {
@@ -80,14 +86,18 @@ async function submitCode() {
           }
       }
       catch (error) {
-          console.error('Error submitting code:', error);
-          code_error.innerText = 'An error occurred, please try again'
+        console.error('Error submitting code:', error);
+        code_error.innerText = 'An error occurred, please try again'
       }
-  }
-  else
-  {
-    code_error.innerText = 'Please enter your code'
-  }
+        submitButton.innerText = "Send"
+        submitButton.disabled = false;
+        submitButton.classList.remove('loading');
+        submitButton.classList.add('popup-submit');
+    }
+    else
+    {
+        code_error.innerText = 'Please enter your code'
+    }
 }
 
 function closePopup() {

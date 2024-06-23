@@ -250,6 +250,10 @@ main {
     transition: color 0.3s, background-color 0.3s;
 }
 
+.wrapper .loading {
+    cursor: wait;
+}
+
 .wrapper .submit_button:hover {
     background: rgba(0,136,169,1);
     color: #fff;

@@ -4,24 +4,13 @@
 
         <script defer src="static/scripts/signup_form_validation.js"></script>
         <div id="popup-overlay" class="popup-overlay" onclick="closePopup(event)">
-            <div class="popup-content" id="email-popup" onclick="stopPropagation(event)" >
-              <h2>Reset password</h2>
-                <p>Please enter your email</p>
-
-              <form id="email-form">
-                <input type="text" id="email-input" name="email-input" autocomplete="off" placeholder="Email">
-                  <div class="error" id="email_popup_error"></div>
-                  <div id="timer"></div>
-                <button class="popup-submit" id="email-submit" type="button" onclick="submit_email()">Send</button>
-              </form>
-
-            </div>
             <div class="popup-content" id="code-popup" style="display: none;" onclick="stopPropagation(event)">
-                <p>Please enter your confirmation code</p>
+                <p>Please enter the confirmation code sent to your email.</p>
 
               <form id="code-form">
                 <input class="code-input" type="text" id="code-input" name="code-input" autocomplete="off" placeholder="XXXXX">
                   <div class="error" id="code_popup_error"></div>
+                  <div id="timer"></div>
                 <button class="popup-submit" type="button" onclick="submitCode()">Submit</button>
               </form>
 
@@ -47,7 +36,7 @@
                 </div>
 
                 <div class="input-box gender">
-                    <select id="gender" name="gender">
+                    <select id="gender" name="gender" onchange="updateGender()">
                         <option value="" disabled selected>Select your gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
@@ -55,6 +44,8 @@
                     </select>
                     <i class='bx bx-chevron-down'></i>
                 </div>
+
+                <input type="hidden" id="selected-gender" name="selected_gender">
 
                 <div class="input-box">
                     <input type="password" placeholder="Password" id="password" name="password">
@@ -65,7 +56,7 @@
                     <i class='bx bxs-lock-alt' ></i>
                 </div>
                 <div class="error" id="error">{{ error }}</div>
-                <button type="button" class="submit_button" onclick="submit_entry()">Sign Up</button>
+                <button type="button" id="sign-up-btn" class="submit_button" onclick="submit_entry()">Sign Up</button>
                 <div class="register-link">
                     <p>Already have an account? <a href="{{ url_for('login')}}">Login</a></p>
                 </div>
