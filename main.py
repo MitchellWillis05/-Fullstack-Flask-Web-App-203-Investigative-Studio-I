@@ -26,7 +26,7 @@ app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
 
-api_key = 'sk-proj-3kzwua9KL9bIYSDlxOUlT3BlbkFJ6Y41oITBxVOrxeN03Wm9'
+api_key = 'sk-proj-QSClDAALYYsVbKINq9vUT3BlbkFJzEKIM8moh7aqGAE04unJ'
 if api_key is None:
     raise ValueError("OPENAI_API_KEY environment variable not set")
 else:

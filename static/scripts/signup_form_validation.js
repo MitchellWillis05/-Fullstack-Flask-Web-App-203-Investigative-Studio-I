@@ -28,3 +28,23 @@ async function submit_entry(){
         error.innerText = 'An error occurred, please try again.';
     }
 }
+
+function showEmailPopup() {
+      document.getElementById('popup-overlay').style.display = 'flex';
+      document.getElementById('email-popup').style.display = 'block';
+      document.getElementById('code-popup').style.display = 'none';
+}
+
+function closePopup() {
+    document.getElementById('popup-overlay').style.display = 'none';
+    document.getElementById('email-input').value = '';
+    document.getElementById('code-input').value = '';
+}
+
+
+
+function stopPropagation(event) {
+    event.stopPropagation();
+}
+
+

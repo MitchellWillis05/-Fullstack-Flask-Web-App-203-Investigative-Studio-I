@@ -1,7 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
     <main>
+
         <script defer src="static/scripts/signup_form_validation.js"></script>
+        <div id="popup-overlay" class="popup-overlay" onclick="closePopup(event)">
+            <div class="popup-content" id="email-popup" onclick="stopPropagation(event)" >
+              <h2>Reset password</h2>
+                <p>Please enter your email</p>
+
+              <form id="email-form">
+                <input type="text" id="email-input" name="email-input" autocomplete="off" placeholder="Email">
+                  <div class="error" id="email_popup_error"></div>
+                  <div id="timer"></div>
+                <button class="popup-submit" id="email-submit" type="button" onclick="submit_email()">Send</button>
+              </form>
+
+            </div>
+            <div class="popup-content" id="code-popup" style="display: none;" onclick="stopPropagation(event)">
+                <p>Please enter your confirmation code</p>
+
+              <form id="code-form">
+                <input class="code-input" type="text" id="code-input" name="code-input" autocomplete="off" placeholder="XXXXX">
+                  <div class="error" id="code_popup_error"></div>
+                <button class="popup-submit" type="button" onclick="submitCode()">Submit</button>
+              </form>
+
+            </div>
+        </div>
+
         <div class="wrapper">
             <form id="signup">
                 <h1>Sign Up</h1>
