@@ -1,4 +1,5 @@
 # import libraries and other files
+import openai
 from dotenv import load_dotenv
 import os
 from random import randint
@@ -27,7 +28,7 @@ app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
 
-api_key = 'sk-proj-QSClDAALYYsVbKINq9vUT3BlbkFJzEKIM8moh7aqGAE04unJ'
+api_key = 'sk-proj-n8ffqJo47Y8m7Z09QSU9T3BlbkFJ8HVQ7RJpjqEublENQ2rS'
 if api_key is None:
     raise ValueError("OPENAI_API_KEY environment variable not set")
 else:
@@ -283,7 +284,10 @@ def entry(entryid):
             if jh.fetch_entry_by_entryid(entryid) is not None:
                 selected_entry = jh.fetch_entry_by_entryid(entryid)
                 if selected_entry[0] == session['current_user_logged_in']:
-                    ai_prompt = generate_ai_analysis(selected_entry)
+                    try:
+                        ai_prompt = generate_ai_analysis(selected_entry)
+                    except openai.AuthenticationError:
+                        return jsonify({'message': "AI Generation is not currently available, please try again later."}), 400
                     if ai_prompt is not None:
                         uh.new_request(selected_entry[0])
                         return jsonify({'message': ai_prompt}), 200
