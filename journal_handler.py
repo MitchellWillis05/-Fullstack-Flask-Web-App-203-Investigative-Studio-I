@@ -89,6 +89,44 @@ def delete_entry_by_entryid(entryid):
         conn.close()
 
 
+def check_generation_vacancy(entryid):
+    conn = db_connect()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT generated_response FROM journal WHERE entryid = ?", (entryid,))
+        fetched = cur.fetchall()
+        return fetched[0][0]
+    except sqlite3.Error as error:
+        print(f"SQLite error: {error}")
+        return None
+
+    except IndexError as error:
+        print(error)
+        return None
+    finally:
+        cur.close()
+        conn.close()
+
+
+def enter_generation_into_entry(ai_prompt, entryid):
+    conn = db_connect()
+    cur = conn.cursor()
+    try:
+        cur.execute("UPDATE journal SET generated_response = ? WHERE entryid = ?", (ai_prompt, entryid))
+        conn.commit()
+        return True
+    except sqlite3.Error as error:
+        print(f"SQLite error: {error}")
+        return False
+
+    except IndexError as error:
+        print(error)
+        return False
+    finally:
+        cur.close()
+        conn.close()
+
+
 def truncate_string(s, length):
     if len(s) > length:
         return s[:length] + "..."

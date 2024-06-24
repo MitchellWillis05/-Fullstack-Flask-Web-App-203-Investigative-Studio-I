@@ -28,7 +28,7 @@ app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
 
-api_key = 'sk-proj-n8ffqJo47Y8m7Z09QSU9T3BlbkFJ8HVQ7RJpjqEublENQ2rS'
+api_key = 'sk-proj-2qqKxg8EM0oUW54B3EX0T3BlbkFJy3GTBsB1BGVKTtTeKg1Y'
 if api_key is None:
     raise ValueError("OPENAI_API_KEY environment variable not set")
 else:
@@ -39,7 +39,7 @@ email_timeout_duration = 60 * 2
 
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('404.html'), 404
+    return render_template('404.html', logged_in=logged_in()), 404
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -284,23 +284,32 @@ def entry(entryid):
             if jh.fetch_entry_by_entryid(entryid) is not None:
                 selected_entry = jh.fetch_entry_by_entryid(entryid)
                 if selected_entry[0] == session['current_user_logged_in']:
-                    try:
-                        ai_prompt = generate_ai_analysis(selected_entry)
-                    except openai.AuthenticationError:
-                        return jsonify({'message': "AI Generation is not currently available, please try again later."}), 400
-                    if ai_prompt is not None:
-                        uh.new_request(selected_entry[0])
-                        return jsonify({'message': ai_prompt}), 200
+                    prompt_available = jh.check_generation_vacancy(entryid)
+                    if prompt_available is None:
+
+                        try:
+                            ai_prompt = generate_ai_analysis(selected_entry)
+                        except openai.AuthenticationError:
+                            return jsonify({'message': "AI Generation is not currently available, please try again later."}), 503
+                        if ai_prompt is not None:
+                            uh.new_request(selected_entry[0])
+                            jh.enter_generation_into_entry(ai_prompt, entryid)
+                            return jsonify({'message': ai_prompt}), 200
+                        else:
+                            return jsonify({'message': "Please wait before generating another response."}), 400
                     else:
-                        return jsonify({'message': "Please wait before generating another response."}), 400
-        return jsonify({'message': 'You do not have access to this entry.'}), 400
+                        return jsonify({'message': "You have already generated a response for this entry."}), 400
+            return jsonify({'message': 'You do not have access to this entry.'}), 401
     elif request.method == 'GET':
         if logged_in():
             if jh.fetch_entry_by_entryid(entryid) is not None:
                 selected_entry = jh.fetch_entry_by_entryid(entryid)
+                ai_data = jh.check_generation_vacancy(entryid)
+                if ai_data is None:
+                    ai_data = ""
                 if selected_entry[0] == session['current_user_logged_in']:
                     return render_template('journal-entry.html',
-                                           entry_data=selected_entry, logged_in=logged_in(), entryid=entryid)
+                                           entry_data=selected_entry, logged_in=logged_in(), entryid=entryid, ai_data=ai_data)
         return redirect(url_for('journal'))
 
 
