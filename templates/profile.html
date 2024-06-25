@@ -4,7 +4,7 @@
             <div class="container">
                     <div class="sidebar">
                         <div class="avatar">
-                            <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+                            <form id="upload-form" method="post" enctype="multipart/form-data">
                                 <input type="file" id="file-input" name="file" style="display: none;" accept="image/png, image/jpeg, image/jpg" />
                                 <button type="button" class="avatar-button" onclick="document.getElementById('file-input').click();">
                                     {% if user_image_url %}
@@ -18,19 +18,21 @@
                             </form>
                         </div>
 
-                    <div class="info">
-                        <p><strong>Username</strong></p>
-                        <p>{{username}}</p>
-                        <p><strong>Email</strong></p>
-                        <p>{{email}}</p>
-                        <p><strong>Gender</strong></p>
-                        <p>{{gender}}</p>
-                        <p><strong>Date of birth</strong></p>
-                        <p>{{dob}}</p>
-                        <p><strong>Administration</strong></p>
-                        <p><a href="{{ url_for('logout')}}">Logout</a></p>
-                        <p><a href="#" class="delete">Delete your account</a></p>
-                    </div>
+                        <div class="error" id="error">{{ error }}</div>
+
+                        <div class="info">
+                            <p><strong>Username</strong></p>
+                            <p>{{username}}</p>
+                            <p><strong>Email</strong></p>
+                            <p>{{email}}</p>
+                            <p><strong>Gender</strong></p>
+                            <p>{{gender}}</p>
+                            <p><strong>Date of birth</strong></p>
+                            <p>{{dob}}</p>
+                            <p><strong>Administration</strong></p>
+                            <p><a href="{{ url_for('logout')}}">Logout</a></p>
+                            <p><a href="#" class="delete">Delete your account</a></p>
+                        </div>
                     </div>
                     <div class="main-content">
                         <h1>User Profile</h1>

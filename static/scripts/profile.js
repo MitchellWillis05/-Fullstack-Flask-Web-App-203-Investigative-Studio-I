@@ -47,6 +47,37 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('starsignImage').src = imageUrl;
 });
 
-document.getElementById('file-input').addEventListener('change', function() {
-    document.getElementById('upload-form').submit();
+document.getElementById('file-input').addEventListener('change', async function() {
+    const formData = new FormData();
+    const error = document.getElementById('error');
+    formData.append('file', this.files[0]);
+
+    try
+    {
+        const response = await fetch('/upload',
+            {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                location.reload();
+            }
+            else if (response.status === 401)
+            {
+                window.location.href = '/login';
+            }
+            else {
+                const result = await response.json();
+
+                error.innerText = result.message || 'Failed to login.';
+            }
+    }
+
+    catch (error)
+    {
+        console.error('Error submitting entry:', error);
+        error.innerText = 'An error occurred, please try again.';
+    }
 });

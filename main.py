@@ -371,8 +371,8 @@ def upload_file():
                 file.save(file_path)
 
                 with Image.open(file_path) as img:
-                    if img.size[0] > 200 or img.size[1] > 200:
-                        img.thumbnail((200, 200))
+                    if img.size[0] > 500 or img.size[1] > 500:
+                        img.thumbnail((500, 500))
                         img.save(file_path)
 
                 return jsonify({'message': 'File uploaded successfully.'}), 200
