@@ -1,5 +1,6 @@
 {% extends "base.html" %}
         {% block content %}
+            <script defer src="/static/scripts/profile.js"></script>
             <div class="container">
                     <div class="sidebar">
                         <div class="avatar">
@@ -22,12 +23,12 @@
                     <div class="main-content">
                         <h1>User Profile</h1>
                         <div class="starsign-img">
-                            <img src="https://via.placeholder.com/250" alt="Starsign">
+                            <img id="starsignImage" src="https://via.placeholder.com/250" alt="Starsign">
                         </div>
 
                         <form>
                             <div class="starsign-wrapper">
-                                <h1 class="starsign-text">{{starsign}}</h1>
+                                <h1 id="starsign-data" class="starsign-text">{{starsign}}</h1>
                                 <p class="starsign-text">{{s_desc}}</p>
                             </div>
                         </form>
