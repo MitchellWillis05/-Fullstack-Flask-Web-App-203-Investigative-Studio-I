@@ -3,13 +3,20 @@
             <script defer src="/static/scripts/profile.js"></script>
             <div class="container">
                     <div class="sidebar">
-                                        <div class="avatar">
-                        <button class="avatar-button">
-                            <img src="/static/images/Profile.png" alt="Avatar">
-                            <div class="overlay"></div>
-                            <div class="camera-icon"><i class='bx bxs-camera-plus'></i></div>
-                        </button>
-                    </div>
+                        <div class="avatar">
+                            <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+                                <input type="file" id="file-input" name="file" style="display: none;" accept="image/png, image/jpeg, image/jpg" />
+                                <button type="button" class="avatar-button" onclick="document.getElementById('file-input').click();">
+                                    {% if user_image_url %}
+                                        <img src="{{ user_image_url }}" alt="Avatar" width="200" height="200">
+                                    {% else %}
+                                        <img src="/static/images/Profile.png" alt="Avatar" width="200" height="200">
+                                    {% endif %}
+                                    <div class="overlay"></div>
+                                    <div class="camera-icon"><i class='bx bxs-camera-plus'></i></div>
+                                </button>
+                            </form>
+                        </div>
 
                     <div class="info">
                         <p><strong>Username</strong></p>

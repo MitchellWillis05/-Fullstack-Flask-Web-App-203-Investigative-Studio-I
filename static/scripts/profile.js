@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const starsign_data = document.getElementById('starsign-data');
-    starsign = starsign_data.innerText;
+    let starsign = starsign_data.innerText;
     let imageUrl;
 
     switch(starsign.toLowerCase()) {
@@ -45,4 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     document.getElementById('starsignImage').src = imageUrl;
+});
+
+document.getElementById('file-input').addEventListener('change', function() {
+    document.getElementById('upload-form').submit();
 });
