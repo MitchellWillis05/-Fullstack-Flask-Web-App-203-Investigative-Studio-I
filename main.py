@@ -372,7 +372,7 @@ def upload_file():
 
                 with Image.open(file_path) as img:
                     if img.size[0] > 500 or img.size[1] > 500:
-                        img.thumbnail((500, 500))
+                        img.thumbnail((500, 500), Image.Resampling.LANCZOS)
                         img.save(file_path)
 
                 return jsonify({'message': 'File uploaded successfully.'}), 200
