@@ -2,7 +2,8 @@
 
 As part of my second year studying Software Engineering at Yoobee Colleges, I developed this full-stack web application that integrates Flask, JavaScript/HTML, and a SQL database to create a modular, secure, and AI-enhanced platform.
 
-**Overview**
+**OVERVIEW**
+
 This project demonstrates my ability to:
 
 - Build scalable, secure backend services using Flask
@@ -15,7 +16,8 @@ This project demonstrates my ability to:
 
 - Design modular systems and manage multiple codebases efficiently
 
-**Key Features**
+**KEY FEATURES**
+
 -Secure User Authentication:
     Uses SHA-based encryption for handling user credentials securely.
 
@@ -34,7 +36,8 @@ This project demonstrates my ability to:
 -Spam handling:
     User cooldowns for requests such as openAI requests and email sending have cooldowns managed through JavaScript and through Flask cookies.
 
-**Tech Stack**
+**TECH STACK**
+
 Backend: Python (Flask)
 
 Frontend: HTML, CSS, JavaScript
@@ -44,3 +47,10 @@ Database: SQLite - PostgreSQL
 AI Integration: OpenAI API
 
 Security: SHA encryption
+
+**HOW TO RUN**
+
+1.    Clone the repository: git clone https://github.com/MitchellWillis05/-Fullstack-Flask-Web-App-203-Investigative-Studio-I
+2.    Install dependencies: pip install -r requirements.txt
+3.    Set up environment variables: OPENAI_API_KEY="your-api-key", MAIL_PASSWORD=:your-mail-password"
+4.    Run the application: py main.py
